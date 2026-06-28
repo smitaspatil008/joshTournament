@@ -22,7 +22,7 @@ export default function Login() {
     setLoading(false);
     if (ok) {
       toast.success(`✅ Welcome, ${role === 'admin' ? 'Admin' : 'Umpire'}!`);
-      navigate(role === 'admin' ? '/admin' : '/live');
+      navigate('/admin');
     } else {
       toast.error('❌ Invalid PIN. Try 1234');
       setPin('');

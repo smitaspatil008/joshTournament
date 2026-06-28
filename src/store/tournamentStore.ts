@@ -48,6 +48,9 @@ interface TournamentState {
   addHistoryEntry: (entry: HistoryEntry) => void;
   deleteHistoryEntry: (year: number) => void;
 
+  changePin: (newPin: string) => void;
+  deleteCompletedMatches: () => void;
+
   reset: () => void;
 }
 
@@ -162,6 +165,10 @@ export const useTournamentStore = create<TournamentState>()(
         set((s) => ({ history: [entry, ...s.history] })),
       deleteHistoryEntry: (year) =>
         set((s) => ({ history: s.history.filter((h) => h.year !== year) })),
+
+      changePin: (newPin) => set({ adminPin: newPin }),
+      deleteCompletedMatches: () =>
+        set((s) => ({ matches: s.matches.filter((m) => m.status !== 'completed') })),
 
       reset: () =>
         set({

@@ -1,17 +1,17 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Plus, Users, Trophy, Zap, CheckCircle, Play, RotateCcw, Shield, Trash2, Calendar, Edit3 } from 'lucide-react';
+import { Plus, Users, Trophy, Zap, CheckCircle, Play, RotateCcw, Shield, Trash2, Calendar, Edit3, Lock, Key } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
 import Layout from '../components/layout/Layout';
 import { useTournamentStore } from '../store/tournamentStore';
 import toast from 'react-hot-toast';
 import type { GameType } from '../types';
 
-type Modal = 'addTeam' | 'addPlayer' | 'startMatch' | 'updateScore' | 'finishMatch' | 'deletePlayer' | 'deleteTeam' | 'addMatch' | 'editMatch' | null;
+type Modal = 'addTeam' | 'addPlayer' | 'startMatch' | 'updateScore' | 'finishMatch' | 'deletePlayer' | 'deleteTeam' | 'addMatch' | 'editMatch' | 'changePin' | 'deleteCompleted' | null;
 
 export default function AdminPortal() {
   const store = useTournamentStore();
-  const { isAdmin, teams, matches, players, addTeam, addPlayer, addMatch, updateMatch, startMatch, updateScore, finishMatch, deletePlayer, deleteTeam, logout } = store;
+  const { isAdmin, userRole, teams, matches, players, addTeam, addPlayer, addMatch, updateMatch, startMatch, updateScore, finishMatch, deletePlayer, deleteTeam, changePin, deleteCompletedMatches, logout } = store;
   const navigate = useNavigate();
   const [modal, setModal] = useState<Modal>(null);
   const [form, setForm] = useState<Record<string, string>>({});
@@ -28,20 +28,26 @@ export default function AdminPortal() {
     );
   }
 
+  const isUmpire = userRole === 'umpire';
   const liveMatches = matches.filter((m) => m.status === 'live');
   const upcomingMatches = matches.filter((m) => m.status === 'upcoming');
+  const completedMatches = matches.filter((m) => m.status === 'completed');
 
-  const actions = [
-    { id: 'addTeam', icon: '🏅', label: 'Add Team', color: '#2563EB', desc: 'Register a new team' },
-    { id: 'addPlayer', icon: '👤', label: 'Add Player', color: '#7C3AED', desc: 'Add player to roster' },
-    { id: 'deletePlayer', icon: '🗑️', label: 'Delete Player', color: '#ef4444', desc: `${players.length} players` },
-    { id: 'deleteTeam', icon: '❌', label: 'Delete Team', color: '#dc2626', desc: `${teams.length} teams` },
-    { id: 'addMatch', icon: '📅', label: 'Add Match', color: '#0891b2', desc: 'Schedule a new match' },
-    { id: 'editMatch', icon: '✏️', label: 'Edit Match', color: '#6366f1', desc: 'Update schedule' },
-    { id: 'startMatch', icon: '▶️', label: 'Start Match', color: '#059669', desc: `${upcomingMatches.length} upcoming` },
-    { id: 'updateScore', icon: '📊', label: 'Update Score', color: '#F97316', desc: `${liveMatches.length} live` },
-    { id: 'finishMatch', icon: '✅', label: 'Finish Match', color: '#D97706', desc: 'End a live match' },
+  const allActions = [
+    { id: 'addTeam', icon: '🏅', label: 'Add Team', color: '#2563EB', desc: 'Register a new team', adminOnly: true },
+    { id: 'addPlayer', icon: '👤', label: 'Add Player', color: '#7C3AED', desc: 'Add player to roster', adminOnly: true },
+    { id: 'deletePlayer', icon: '🗑️', label: 'Delete Player', color: '#ef4444', desc: `${players.length} players`, adminOnly: true },
+    { id: 'deleteTeam', icon: '❌', label: 'Delete Team', color: '#dc2626', desc: `${teams.length} teams`, adminOnly: true },
+    { id: 'addMatch', icon: '📅', label: 'Add Match', color: '#0891b2', desc: 'Schedule a new match', adminOnly: true },
+    { id: 'editMatch', icon: '✏️', label: 'Edit Match', color: '#6366f1', desc: 'Update schedule', adminOnly: true },
+    { id: 'startMatch', icon: '▶️', label: 'Start Match', color: '#059669', desc: `${upcomingMatches.length} upcoming`, adminOnly: false },
+    { id: 'updateScore', icon: '📊', label: 'Update Score', color: '#F97316', desc: `${liveMatches.length} live`, adminOnly: false },
+    { id: 'finishMatch', icon: '✅', label: 'Finish Match', color: '#D97706', desc: 'End a live match', adminOnly: false },
+    { id: 'deleteCompleted', icon: '🧹', label: 'Delete Completed', color: '#78716c', desc: `${completedMatches.length} completed`, adminOnly: true },
+    { id: 'changePin', icon: '🔑', label: 'Change PIN', color: '#0d9488', desc: 'Update access PIN', adminOnly: true },
   ];
+
+  const actions = isUmpire ? allActions.filter(a => !a.adminOnly) : allActions;
 
   const handleAction = (id: string) => {
     setForm({});
@@ -50,7 +56,11 @@ export default function AdminPortal() {
 
   const closeModal = () => { setModal(null); setForm({}); };
 
-  const modalTitle = actions.find(a => a.id === modal)?.label ?? '';
+  const modalTitle = (() => {
+    if (modal === 'changePin') return 'Change PIN';
+    if (modal === 'deleteCompleted') return 'Delete Completed Matches';
+    return allActions.find(a => a.id === modal)?.label ?? '';
+  })();
 
   const handleSubmit = () => {
     if (modal === 'addTeam') {
@@ -104,6 +114,14 @@ export default function AdminPortal() {
       if (!form.matchId || !form.winner) { toast.error('Select match and winner'); return; }
       finishMatch(form.matchId, form.winner);
       toast.success('Match finished!');
+    } else if (modal === 'changePin') {
+      if (!form.newPin || form.newPin.length < 4) { toast.error('PIN must be at least 4 digits'); return; }
+      if (form.newPin !== form.confirmPin) { toast.error('PINs do not match'); return; }
+      changePin(form.newPin);
+      toast.success('PIN changed successfully!');
+    } else if (modal === 'deleteCompleted') {
+      deleteCompletedMatches();
+      toast.success(`Deleted ${completedMatches.length} completed matches`);
     }
     closeModal();
   };
@@ -210,18 +228,34 @@ export default function AdminPortal() {
         );
       case 'updateScore':
         return <>
-          <select value={form.matchId ?? ''} onChange={e => setForm({ ...form, matchId: e.target.value })} className="w-full px-4 py-3 rounded-xl border text-sm outline-none" style={inputStyle}>
+          <select value={form.matchId ?? ''} onChange={e => {
+            const m = matches.find(x => x.id === e.target.value);
+            setForm({ ...form, matchId: e.target.value, scoreA: String(m?.scoreA ?? 0), scoreB: String(m?.scoreB ?? 0) });
+          }} className="w-full px-4 py-3 rounded-xl border text-sm outline-none" style={inputStyle}>
             <option value="">Select Live Match</option>
             {liveMatches.map(m => {
               const tA = teams.find(t => t.id === m.teamAId);
               const tB = teams.find(t => t.id === m.teamBId);
-              return <option key={m.id} value={m.id}>{tA?.name} vs {tB?.name}</option>;
+              return <option key={m.id} value={m.id}>{tA?.name} vs {tB?.name} ({m.scoreA}-{m.scoreB})</option>;
             })}
           </select>
-          <div className="grid grid-cols-2 gap-2">
-            <input type="number" placeholder="Score A" value={form.scoreA ?? ''} onChange={e => setForm({ ...form, scoreA: e.target.value })} className="px-4 py-3 rounded-xl border text-sm outline-none text-center font-bold text-xl" style={inputStyle} />
-            <input type="number" placeholder="Score B" value={form.scoreB ?? ''} onChange={e => setForm({ ...form, scoreB: e.target.value })} className="px-4 py-3 rounded-xl border text-sm outline-none text-center font-bold text-xl" style={inputStyle} />
-          </div>
+          {form.matchId && (() => {
+            const m = matches.find(x => x.id === form.matchId);
+            const tA = teams.find(t => t.id === m?.teamAId);
+            const tB = teams.find(t => t.id === m?.teamBId);
+            return (
+              <div className="space-y-2">
+                <div className="flex items-center justify-between text-xs text-muted px-1">
+                  <span>{tA?.name}</span>
+                  <span>{tB?.name}</span>
+                </div>
+                <div className="grid grid-cols-2 gap-2">
+                  <input type="number" placeholder="Score A" value={form.scoreA ?? ''} onChange={e => setForm({ ...form, scoreA: e.target.value })} className="px-4 py-3 rounded-xl border text-sm outline-none text-center font-bold text-xl" style={inputStyle} />
+                  <input type="number" placeholder="Score B" value={form.scoreB ?? ''} onChange={e => setForm({ ...form, scoreB: e.target.value })} className="px-4 py-3 rounded-xl border text-sm outline-none text-center font-bold text-xl" style={inputStyle} />
+                </div>
+              </div>
+            );
+          })()}
         </>;
       case 'finishMatch':
         return <>
@@ -247,6 +281,32 @@ export default function AdminPortal() {
             </select>
           )}
         </>;
+      case 'changePin':
+        return <>
+          <input type="password" placeholder="New PIN (min 4 digits)" value={form.newPin ?? ''} onChange={e => setForm({ ...form, newPin: e.target.value })} className="w-full px-4 py-3 rounded-xl border text-sm outline-none text-center text-xl tracking-[0.3em]" style={inputStyle} maxLength={6} />
+          <input type="password" placeholder="Confirm PIN" value={form.confirmPin ?? ''} onChange={e => setForm({ ...form, confirmPin: e.target.value })} className="w-full px-4 py-3 rounded-xl border text-sm outline-none text-center text-xl tracking-[0.3em]" style={inputStyle} maxLength={6} />
+        </>;
+      case 'deleteCompleted':
+        return (
+          <div className="space-y-3">
+            <div className="p-4 rounded-xl text-sm" style={{ background: 'rgba(239,68,68,0.1)', color: '#ef4444' }}>
+              ⚠️ This will permanently delete {completedMatches.length} completed match{completedMatches.length !== 1 ? 'es' : ''}.
+            </div>
+            {completedMatches.slice(0, 5).map(m => {
+              const tA = teams.find(t => t.id === m.teamAId);
+              const tB = teams.find(t => t.id === m.teamBId);
+              return (
+                <div key={m.id} className="text-xs px-3 py-2 rounded-lg flex justify-between" style={{ background: 'var(--color-surface-2)', color: 'var(--color-text-muted)' }}>
+                  <span>{tA?.name} vs {tB?.name}</span>
+                  <span>{m.scoreA}-{m.scoreB}</span>
+                </div>
+              );
+            })}
+            {completedMatches.length > 5 && (
+              <p className="text-xs text-muted text-center">...and {completedMatches.length - 5} more</p>
+            )}
+          </div>
+        );
       default:
         return null;
     }
@@ -256,8 +316,12 @@ export default function AdminPortal() {
     <Layout>
       <div className="mb-8 flex items-center justify-between">
         <div>
-          <h1 className="font-display font-bold text-3xl gradient-text mb-1">Admin Portal</h1>
-          <p className="text-muted text-sm">Tournament control center</p>
+          <h1 className="font-display font-bold text-3xl gradient-text mb-1">
+            {isUmpire ? 'Umpire Panel' : 'Admin Portal'}
+          </h1>
+          <p className="text-muted text-sm">
+            {isUmpire ? 'Match control center' : 'Tournament control center'}
+          </p>
         </div>
         <button onClick={() => { logout(); navigate('/'); toast.success('Logged out'); }}
           className="text-sm text-red-500 hover:text-red-600 border border-red-500/30 px-3 py-1.5 rounded-lg transition-colors">
@@ -344,8 +408,8 @@ export default function AdminPortal() {
             </div>
             <div className="flex gap-3 mt-5">
               <button onClick={closeModal} className="flex-1 py-3 rounded-xl border text-sm font-medium transition-colors hover:bg-red-500/10 hover:text-red-500" style={{ borderColor: 'var(--color-border)', color: 'var(--color-text-muted)' }}>Cancel</button>
-              <button onClick={handleSubmit} className="flex-1 py-3 rounded-xl text-sm font-semibold text-white" style={{ background: modal === 'deletePlayer' || modal === 'deleteTeam' ? 'linear-gradient(135deg,#ef4444,#dc2626)' : 'linear-gradient(135deg,#2563EB,#7C3AED)' }}>
-                {modal === 'deletePlayer' || modal === 'deleteTeam' ? 'Delete' : 'Confirm'}
+              <button onClick={handleSubmit} className="flex-1 py-3 rounded-xl text-sm font-semibold text-white" style={{ background: modal === 'deletePlayer' || modal === 'deleteTeam' || modal === 'deleteCompleted' ? 'linear-gradient(135deg,#ef4444,#dc2626)' : 'linear-gradient(135deg,#2563EB,#7C3AED)' }}>
+                {modal === 'deletePlayer' || modal === 'deleteTeam' || modal === 'deleteCompleted' ? 'Delete' : 'Confirm'}
               </button>
             </div>
           </motion.div>
