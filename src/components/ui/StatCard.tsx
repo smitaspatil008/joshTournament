@@ -13,23 +13,23 @@ interface Props {
 export default function StatCard({ icon, label, value, gradient, delay = 0, sub }: Props) {
   return (
     <motion.div
-      initial={{ opacity: 0, y: 20 }}
+      initial={{ opacity: 0, y: 12 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ delay, duration: 0.4 }}
-      whileHover={{ y: -4, boxShadow: '0 20px 40px rgba(37,99,235,0.2)' }}
-      className="surface rounded-2xl p-5 cursor-default"
+      transition={{ delay, duration: 0.3 }}
+      whileHover={{ y: -2, boxShadow: '0 8px 24px rgba(0,0,0,0.06)' }}
+      className="bg-white rounded-xl border border-gray-200 p-5 cursor-default transition-shadow"
     >
       <div className="flex items-start justify-between mb-3">
         <div
-          className="w-11 h-11 rounded-xl flex items-center justify-center text-white"
-          style={{ background: gradient ?? 'linear-gradient(135deg,#2563EB,#7C3AED)' }}
+          className="w-10 h-10 rounded-lg flex items-center justify-center text-white"
+          style={{ background: gradient ?? '#2563EB' }}
         >
           {icon}
         </div>
-        {sub && <span className="text-xs text-green-500 font-medium bg-green-500/10 px-2 py-0.5 rounded-full">{sub}</span>}
+        {sub && <span className="text-xs text-green-600 font-medium bg-green-50 px-2 py-0.5 rounded-full">{sub}</span>}
       </div>
-      <div className="font-display font-bold text-3xl" style={{ color: 'var(--color-text)' }}>{value}</div>
-      <div className="text-sm text-muted mt-0.5">{label}</div>
+      <div className="font-bold text-3xl text-gray-900">{value}</div>
+      <div className="text-sm text-gray-500 mt-0.5">{label}</div>
     </motion.div>
   );
 }

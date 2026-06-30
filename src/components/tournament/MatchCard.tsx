@@ -38,45 +38,45 @@ export default function MatchCard({ match, teamA, teamB, playerA, playerB, compa
 
   return (
     <motion.div
-      whileHover={{ y: -3, boxShadow: '0 16px 40px rgba(37,99,235,0.15)' }}
-      className={`surface rounded-2xl overflow-hidden ${isLive ? 'ring-2 ring-red-500/50' : ''}`}
+      whileHover={{ y: -3, boxShadow: '0 8px 24px rgba(0,0,0,0.08)' }}
+      className={`bg-white rounded-xl border border-gray-200 overflow-hidden shadow-sm ${isLive ? 'ring-2 ring-red-500/50' : ''}`}
     >
       {/* Top bar */}
-      <div className="px-4 py-2 flex items-center justify-between" style={{ background: isLive ? 'rgba(239,68,68,0.08)' : 'var(--color-surface-2)' }}>
+      <div className={`px-4 py-2 flex items-center justify-between ${isLive ? 'bg-red-50' : 'bg-gray-50'}`}>
         <div className="flex items-center gap-2">
           {isLive && <LiveBadge size="sm" />}
           {!isLive && (
-            <span className={`text-xs font-medium px-2 py-0.5 rounded-full ${isDone ? 'bg-green-500/15 text-green-500' : 'bg-blue-500/15 text-blue-500'}`}>
+            <span className={`text-xs font-medium px-2 py-0.5 rounded-full ${isDone ? 'bg-green-50 text-green-600' : 'bg-blue-50 text-blue-600'}`}>
               {isDone ? 'Completed' : 'Upcoming'}
             </span>
           )}
-          <span className="text-xs text-muted capitalize">{match.game} · {match.round}</span>
+          <span className="text-xs text-gray-500 capitalize">{match.game} · {match.round}</span>
         </div>
-        <div className="flex items-center gap-1 text-xs text-muted">
+        <div className="flex items-center gap-1 text-xs text-gray-500">
           <MapPin className="w-3 h-3" />
           {match.court}
         </div>
       </div>
 
-      <Link to={`/match/${match.id}`} className="block p-4 hover:bg-brand-blue/5 transition-colors">
+      <Link to={`/match/${match.id}`} className="block p-4 hover:bg-gray-50 transition-colors">
         <div className="flex items-center gap-3">
           {/* Team A */}
           <div className="flex-1 flex items-center gap-3">
             <TeamLogoCircle team={teamA} />
             <div className="min-w-0">
-              <div className="font-semibold text-sm truncate" style={{ color: match.winner === teamA.id ? teamA.color : 'var(--color-text)' }}>
+              <div className="font-semibold text-sm truncate" style={{ color: match.winner === teamA.id ? teamA.color : '#111827' }}>
                 {teamA.name}
               </div>
-              {playerA && <div className="text-xs text-muted truncate">{playerA.name}</div>}
-              {match.winner === teamA.id && <div className="text-[10px] font-bold text-yellow-500">WINNER 🏆</div>}
+              {playerA && <div className="text-xs text-gray-500 truncate">{playerA.name}</div>}
+              {match.winner === teamA.id && <div className="text-[10px] font-bold text-yellow-600">WINNER 🏆</div>}
             </div>
           </div>
 
           {/* Scores */}
           <div className="flex items-center gap-3 flex-shrink-0">
-            <AnimatedScore score={match.scoreA} color={match.winner === teamA.id ? teamA.color : 'var(--color-text)'} size="md" />
+            <AnimatedScore score={match.scoreA} color={match.winner === teamA.id ? teamA.color : '#111827'} size="md" />
             <div className="flex flex-col items-center gap-0.5">
-              <span className="text-xs text-muted font-medium">VS</span>
+              <span className="text-xs text-gray-500 font-medium">VS</span>
               {isLive && (
                 <motion.span
                   animate={{ opacity: [1,0,1] }}
@@ -85,25 +85,25 @@ export default function MatchCard({ match, teamA, teamB, playerA, playerB, compa
                 >●</motion.span>
               )}
             </div>
-            <AnimatedScore score={match.scoreB} color={match.winner === teamB.id ? teamB.color : 'var(--color-text)'} size="md" />
+            <AnimatedScore score={match.scoreB} color={match.winner === teamB.id ? teamB.color : '#111827'} size="md" />
           </div>
 
           {/* Team B */}
           <div className="flex-1 flex items-center justify-end gap-3">
             <div className="min-w-0 text-right">
-              <div className="font-semibold text-sm truncate" style={{ color: match.winner === teamB.id ? teamB.color : 'var(--color-text)' }}>
+              <div className="font-semibold text-sm truncate" style={{ color: match.winner === teamB.id ? teamB.color : '#111827' }}>
                 {teamB.name}
               </div>
-              {playerB && <div className="text-xs text-muted truncate">{playerB.name}</div>}
-              {match.winner === teamB.id && <div className="text-[10px] font-bold text-yellow-500">WINNER 🏆</div>}
+              {playerB && <div className="text-xs text-gray-500 truncate">{playerB.name}</div>}
+              {match.winner === teamB.id && <div className="text-[10px] font-bold text-yellow-600">WINNER 🏆</div>}
             </div>
             <TeamLogoCircle team={teamB} />
           </div>
         </div>
 
         {!compact && (
-          <div className="flex items-center gap-3 mt-3 pt-3 border-t text-xs text-muted" style={{ borderColor: 'var(--color-border)' }}>
-            <span className="flex items-center gap-1"><Clock className="w-3 h-3" />{date} {time}</span>
+          <div className="flex items-center gap-3 mt-3 pt-3 border-t border-gray-200 text-xs text-gray-500">
+            <span className="flex items-center gap-1 opacity-70"><Clock className="w-3 h-3" />{date} {time}</span>
           </div>
         )}
       </Link>

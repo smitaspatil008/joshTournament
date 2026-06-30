@@ -21,9 +21,9 @@ export default function LiveMatches() {
       <div className="mb-8">
         <div className="flex items-center gap-3 mb-2">
           <LiveBadge />
-          <h1 className="font-display font-bold text-3xl gradient-text">Live Matches</h1>
+          <h1 className="font-display font-bold text-3xl text-blue-600 font-extrabold">Live Matches</h1>
         </div>
-        <p className="text-muted text-sm">{live.length} match{live.length !== 1 ? 'es' : ''} live right now</p>
+        <p className="text-gray-500 text-sm">{live.length} match{live.length !== 1 ? 'es' : ''} live right now</p>
       </div>
 
       {/* Live */}
@@ -31,7 +31,7 @@ export default function LiveMatches() {
         <section className="mb-12">
           <div className="flex items-center gap-2 mb-4">
             <Flame className="w-5 h-5 text-red-500" />
-            <h2 className="font-semibold text-lg" style={{ color: 'var(--color-text)' }}>Playing Now</h2>
+            <h2 className="font-semibold text-lg text-gray-900">Playing Now</h2>
           </div>
           <div className="grid sm:grid-cols-2 gap-5">
             {live.map((m, i) => (
@@ -47,18 +47,18 @@ export default function LiveMatches() {
           </div>
         </section>
       ) : (
-        <div className="surface rounded-2xl p-12 text-center mb-12">
-          <Flame className="w-12 h-12 mx-auto mb-3 text-muted opacity-40" />
-          <h3 className="font-semibold text-lg mb-1" style={{ color: 'var(--color-text)' }}>No Live Matches</h3>
-          <p className="text-muted text-sm">Check back soon for the next match</p>
+        <div className="bg-white rounded-2xl border border-gray-200 p-12 text-center mb-12">
+          <Flame className="w-12 h-12 mx-auto mb-3 text-gray-500 opacity-40" />
+          <h3 className="font-semibold text-lg mb-1 text-gray-900">No Live Matches</h3>
+          <p className="text-gray-500 text-sm">Check back soon for the next match</p>
         </div>
       )}
 
       {/* Upcoming */}
       <section>
         <div className="flex items-center gap-2 mb-4">
-          <Clock className="w-5 h-5 text-brand-orange" />
-          <h2 className="font-semibold text-lg" style={{ color: 'var(--color-text)' }}>Upcoming</h2>
+          <Clock className="w-5 h-5 text-blue-600" />
+          <h2 className="font-semibold text-lg text-gray-900">Upcoming</h2>
         </div>
         <div className="grid sm:grid-cols-2 gap-4">
           {upcoming.map((m, i) => (
@@ -67,7 +67,7 @@ export default function LiveMatches() {
             </motion.div>
           ))}
           {upcoming.length === 0 && (
-            <div className="col-span-2 surface rounded-2xl p-8 text-center text-muted text-sm">No upcoming matches scheduled</div>
+            <div className="col-span-2 bg-white rounded-2xl border border-gray-200 p-8 text-center text-gray-500 text-sm">No upcoming matches scheduled</div>
           )}
         </div>
       </section>

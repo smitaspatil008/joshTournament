@@ -20,9 +20,9 @@ export default function AdminPortal() {
     return (
       <Layout>
         <div className="text-center py-20">
-          <Shield className="w-12 h-12 mx-auto mb-4 text-muted opacity-40" />
-          <h2 className="font-semibold text-lg mb-2" style={{ color: 'var(--color-text)' }}>Admin Access Required</h2>
-          <Link to="/login" className="btn-primary inline-flex">Login as Admin</Link>
+          <Shield className="w-12 h-12 mx-auto mb-4 text-gray-500 opacity-40" />
+          <h2 className="font-semibold text-lg mb-2 text-gray-900">Admin Access Required</h2>
+          <Link to="/login" className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 inline-flex text-sm font-semibold">Login as Admin</Link>
         </div>
       </Layout>
     );
@@ -35,13 +35,13 @@ export default function AdminPortal() {
 
   const allActions = [
     { id: 'addTeam', icon: '🏅', label: 'Add Team', color: '#2563EB', desc: 'Register a new team', adminOnly: true },
-    { id: 'addPlayer', icon: '👤', label: 'Add Player', color: '#7C3AED', desc: 'Add player to roster', adminOnly: true },
+    { id: 'addPlayer', icon: '👤', label: 'Add Player', color: '#2563EB', desc: 'Add player to roster', adminOnly: true },
     { id: 'deletePlayer', icon: '🗑️', label: 'Delete Player', color: '#ef4444', desc: `${players.length} players`, adminOnly: true },
     { id: 'deleteTeam', icon: '❌', label: 'Delete Team', color: '#dc2626', desc: `${teams.length} teams`, adminOnly: true },
     { id: 'addMatch', icon: '📅', label: 'Add Match', color: '#0891b2', desc: 'Schedule a new match', adminOnly: true },
     { id: 'editMatch', icon: '✏️', label: 'Edit Match', color: '#6366f1', desc: 'Update schedule', adminOnly: true },
     { id: 'startMatch', icon: '▶️', label: 'Start Match', color: '#059669', desc: `${upcomingMatches.length} upcoming`, adminOnly: false },
-    { id: 'updateScore', icon: '📊', label: 'Update Score', color: '#F97316', desc: `${liveMatches.length} live`, adminOnly: false },
+    { id: 'updateScore', icon: '📊', label: 'Update Score', color: '#2563EB', desc: `${liveMatches.length} live`, adminOnly: false },
     { id: 'finishMatch', icon: '✅', label: 'Finish Match', color: '#D97706', desc: 'End a live match', adminOnly: false },
     { id: 'deleteCompleted', icon: '🧹', label: 'Delete Completed', color: '#78716c', desc: `${completedMatches.length} completed`, adminOnly: true },
     { id: 'changePin', icon: '🔑', label: 'Change PIN', color: '#0d9488', desc: 'Update access PIN', adminOnly: true },
@@ -126,18 +126,14 @@ export default function AdminPortal() {
     closeModal();
   };
 
-  const inputStyle = {
-    background: 'var(--color-surface-2)',
-    borderColor: 'var(--color-border)',
-    color: 'var(--color-text)',
-  };
+  const inputClasses = "w-full px-4 py-3 rounded-lg border border-gray-300 text-sm outline-none bg-white text-gray-900 focus:ring-2 focus:ring-blue-500/30";
 
   const renderModalContent = () => {
     switch (modal) {
       case 'addTeam':
         return <>
-          <input placeholder="Team Name *" value={form.name ?? ''} onChange={e => setForm({ ...form, name: e.target.value })} className="w-full px-4 py-3 rounded-xl border text-sm outline-none" style={inputStyle} />
-          <select value={form.game ?? ''} onChange={e => setForm({ ...form, game: e.target.value })} className="w-full px-4 py-3 rounded-xl border text-sm outline-none" style={inputStyle}>
+          <input placeholder="Team Name *" value={form.name ?? ''} onChange={e => setForm({ ...form, name: e.target.value })} className={inputClasses} />
+          <select value={form.game ?? ''} onChange={e => setForm({ ...form, game: e.target.value })} className={inputClasses}>
             <option value="">Select Game *</option>
             <option value="carrom">Carrom</option>
             <option value="sequence">Sequence</option>
@@ -146,16 +142,16 @@ export default function AdminPortal() {
         </>;
       case 'addPlayer':
         return <>
-          <input placeholder="Player Name *" value={form.name ?? ''} onChange={e => setForm({ ...form, name: e.target.value })} className="w-full px-4 py-3 rounded-xl border text-sm outline-none" style={inputStyle} />
-          <input placeholder="Photo URL (optional)" value={form.photo ?? ''} onChange={e => setForm({ ...form, photo: e.target.value })} className="w-full px-4 py-3 rounded-xl border text-sm outline-none" style={inputStyle} />
-          <select value={form.teamId ?? ''} onChange={e => setForm({ ...form, teamId: e.target.value })} className="w-full px-4 py-3 rounded-xl border text-sm outline-none" style={inputStyle}>
+          <input placeholder="Player Name *" value={form.name ?? ''} onChange={e => setForm({ ...form, name: e.target.value })} className={inputClasses} />
+          <input placeholder="Photo URL (optional)" value={form.photo ?? ''} onChange={e => setForm({ ...form, photo: e.target.value })} className={inputClasses} />
+          <select value={form.teamId ?? ''} onChange={e => setForm({ ...form, teamId: e.target.value })} className={inputClasses}>
             <option value="">Select Team *</option>
             {teams.map(t => <option key={t.id} value={t.id}>{t.name} ({t.game})</option>)}
           </select>
         </>;
       case 'deletePlayer':
         return (
-          <select value={form.playerId ?? ''} onChange={e => setForm({ ...form, playerId: e.target.value })} className="w-full px-4 py-3 rounded-xl border text-sm outline-none" style={inputStyle}>
+          <select value={form.playerId ?? ''} onChange={e => setForm({ ...form, playerId: e.target.value })} className={inputClasses}>
             <option value="">Select Player to Delete</option>
             {players.map(p => {
               const team = teams.find(t => t.id === p.teamId);
@@ -165,43 +161,43 @@ export default function AdminPortal() {
         );
       case 'deleteTeam':
         return <>
-          <select value={form.teamId ?? ''} onChange={e => setForm({ ...form, teamId: e.target.value })} className="w-full px-4 py-3 rounded-xl border text-sm outline-none" style={inputStyle}>
+          <select value={form.teamId ?? ''} onChange={e => setForm({ ...form, teamId: e.target.value })} className={inputClasses}>
             <option value="">Select Team to Delete</option>
             {teams.map(t => <option key={t.id} value={t.id}>{t.name} ({t.game})</option>)}
           </select>
           {form.teamId && (
-            <div className="p-3 rounded-xl text-xs text-red-400" style={{ background: 'rgba(239,68,68,0.1)' }}>
-              ⚠️ This will also delete all players and matches for this team.
+            <div className="p-3 rounded-lg text-xs text-red-500 bg-red-50">
+              Warning: This will also delete all players and matches for this team.
             </div>
           )}
         </>;
       case 'addMatch':
         return <>
-          <select value={form.game ?? ''} onChange={e => setForm({ ...form, game: e.target.value, teamAId: '', teamBId: '' })} className="w-full px-4 py-3 rounded-xl border text-sm outline-none" style={inputStyle}>
+          <select value={form.game ?? ''} onChange={e => setForm({ ...form, game: e.target.value, teamAId: '', teamBId: '' })} className={inputClasses}>
             <option value="">Select Game *</option>
             <option value="carrom">Carrom</option>
             <option value="sequence">Sequence</option>
           </select>
           {form.game && <>
-            <select value={form.teamAId ?? ''} onChange={e => setForm({ ...form, teamAId: e.target.value })} className="w-full px-4 py-3 rounded-xl border text-sm outline-none" style={inputStyle}>
+            <select value={form.teamAId ?? ''} onChange={e => setForm({ ...form, teamAId: e.target.value })} className={inputClasses}>
               <option value="">Team A *</option>
               {teams.filter(t => t.game === form.game && t.id !== form.teamBId).map(t => <option key={t.id} value={t.id}>{t.name}</option>)}
             </select>
-            <select value={form.teamBId ?? ''} onChange={e => setForm({ ...form, teamBId: e.target.value })} className="w-full px-4 py-3 rounded-xl border text-sm outline-none" style={inputStyle}>
+            <select value={form.teamBId ?? ''} onChange={e => setForm({ ...form, teamBId: e.target.value })} className={inputClasses}>
               <option value="">Team B *</option>
               {teams.filter(t => t.game === form.game && t.id !== form.teamAId).map(t => <option key={t.id} value={t.id}>{t.name}</option>)}
             </select>
           </>}
-          <input placeholder="Round (e.g. Group Stage)" value={form.round ?? ''} onChange={e => setForm({ ...form, round: e.target.value })} className="w-full px-4 py-3 rounded-xl border text-sm outline-none" style={inputStyle} />
-          <input placeholder="Court" value={form.court ?? ''} onChange={e => setForm({ ...form, court: e.target.value })} className="w-full px-4 py-3 rounded-xl border text-sm outline-none" style={inputStyle} />
-          <input type="datetime-local" value={form.scheduledAt ?? ''} onChange={e => setForm({ ...form, scheduledAt: e.target.value })} className="w-full px-4 py-3 rounded-xl border text-sm outline-none" style={inputStyle} />
+          <input placeholder="Round (e.g. Group Stage)" value={form.round ?? ''} onChange={e => setForm({ ...form, round: e.target.value })} className={inputClasses} />
+          <input placeholder="Court" value={form.court ?? ''} onChange={e => setForm({ ...form, court: e.target.value })} className={inputClasses} />
+          <input type="datetime-local" value={form.scheduledAt ?? ''} onChange={e => setForm({ ...form, scheduledAt: e.target.value })} className={inputClasses} />
         </>;
       case 'editMatch':
         return <>
           <select value={form.matchId ?? ''} onChange={e => {
             const m = matches.find(x => x.id === e.target.value);
             setForm({ ...form, matchId: e.target.value, court: m?.court ?? '', round: m?.round ?? '', scheduledAt: m?.scheduledAt?.slice(0, 16) ?? '' });
-          }} className="w-full px-4 py-3 rounded-xl border text-sm outline-none" style={inputStyle}>
+          }} className={inputClasses}>
             <option value="">Select Match</option>
             {matches.filter(m => m.status !== 'completed').map(m => {
               const tA = teams.find(t => t.id === m.teamAId);
@@ -210,14 +206,14 @@ export default function AdminPortal() {
             })}
           </select>
           {form.matchId && <>
-            <input placeholder="Round" value={form.round ?? ''} onChange={e => setForm({ ...form, round: e.target.value })} className="w-full px-4 py-3 rounded-xl border text-sm outline-none" style={inputStyle} />
-            <input placeholder="Court" value={form.court ?? ''} onChange={e => setForm({ ...form, court: e.target.value })} className="w-full px-4 py-3 rounded-xl border text-sm outline-none" style={inputStyle} />
-            <input type="datetime-local" value={form.scheduledAt ?? ''} onChange={e => setForm({ ...form, scheduledAt: e.target.value })} className="w-full px-4 py-3 rounded-xl border text-sm outline-none" style={inputStyle} />
+            <input placeholder="Round" value={form.round ?? ''} onChange={e => setForm({ ...form, round: e.target.value })} className={inputClasses} />
+            <input placeholder="Court" value={form.court ?? ''} onChange={e => setForm({ ...form, court: e.target.value })} className={inputClasses} />
+            <input type="datetime-local" value={form.scheduledAt ?? ''} onChange={e => setForm({ ...form, scheduledAt: e.target.value })} className={inputClasses} />
           </>}
         </>;
       case 'startMatch':
         return (
-          <select value={form.matchId ?? ''} onChange={e => setForm({ ...form, matchId: e.target.value })} className="w-full px-4 py-3 rounded-xl border text-sm outline-none" style={inputStyle}>
+          <select value={form.matchId ?? ''} onChange={e => setForm({ ...form, matchId: e.target.value })} className={inputClasses}>
             <option value="">Select Match</option>
             {upcomingMatches.map(m => {
               const tA = teams.find(t => t.id === m.teamAId);
@@ -231,7 +227,7 @@ export default function AdminPortal() {
           <select value={form.matchId ?? ''} onChange={e => {
             const m = matches.find(x => x.id === e.target.value);
             setForm({ ...form, matchId: e.target.value, scoreA: String(m?.scoreA ?? 0), scoreB: String(m?.scoreB ?? 0) });
-          }} className="w-full px-4 py-3 rounded-xl border text-sm outline-none" style={inputStyle}>
+          }} className={inputClasses}>
             <option value="">Select Live Match</option>
             {liveMatches.map(m => {
               const tA = teams.find(t => t.id === m.teamAId);
@@ -245,13 +241,13 @@ export default function AdminPortal() {
             const tB = teams.find(t => t.id === m?.teamBId);
             return (
               <div className="space-y-2">
-                <div className="flex items-center justify-between text-xs text-muted px-1">
+                <div className="flex items-center justify-between text-xs text-gray-500 px-1">
                   <span>{tA?.name}</span>
                   <span>{tB?.name}</span>
                 </div>
                 <div className="grid grid-cols-2 gap-2">
-                  <input type="number" placeholder="Score A" value={form.scoreA ?? ''} onChange={e => setForm({ ...form, scoreA: e.target.value })} className="px-4 py-3 rounded-xl border text-sm outline-none text-center font-bold text-xl" style={inputStyle} />
-                  <input type="number" placeholder="Score B" value={form.scoreB ?? ''} onChange={e => setForm({ ...form, scoreB: e.target.value })} className="px-4 py-3 rounded-xl border text-sm outline-none text-center font-bold text-xl" style={inputStyle} />
+                  <input type="number" placeholder="Score A" value={form.scoreA ?? ''} onChange={e => setForm({ ...form, scoreA: e.target.value })} className={`${inputClasses} text-center font-bold text-xl`} />
+                  <input type="number" placeholder="Score B" value={form.scoreB ?? ''} onChange={e => setForm({ ...form, scoreB: e.target.value })} className={`${inputClasses} text-center font-bold text-xl`} />
                 </div>
               </div>
             );
@@ -259,7 +255,7 @@ export default function AdminPortal() {
         </>;
       case 'finishMatch':
         return <>
-          <select value={form.matchId ?? ''} onChange={e => setForm({ ...form, matchId: e.target.value })} className="w-full px-4 py-3 rounded-xl border text-sm outline-none" style={inputStyle}>
+          <select value={form.matchId ?? ''} onChange={e => setForm({ ...form, matchId: e.target.value })} className={inputClasses}>
             <option value="">Select Match</option>
             {liveMatches.map(m => {
               const tA = teams.find(t => t.id === m.teamAId);
@@ -268,7 +264,7 @@ export default function AdminPortal() {
             })}
           </select>
           {form.matchId && (
-            <select value={form.winner ?? ''} onChange={e => setForm({ ...form, winner: e.target.value })} className="w-full px-4 py-3 rounded-xl border text-sm outline-none" style={inputStyle}>
+            <select value={form.winner ?? ''} onChange={e => setForm({ ...form, winner: e.target.value })} className={inputClasses}>
               <option value="">Select Winner</option>
               {(() => {
                 const m = matches.find(x => x.id === form.matchId);
@@ -283,27 +279,27 @@ export default function AdminPortal() {
         </>;
       case 'changePin':
         return <>
-          <input type="password" placeholder="New PIN (min 4 digits)" value={form.newPin ?? ''} onChange={e => setForm({ ...form, newPin: e.target.value })} className="w-full px-4 py-3 rounded-xl border text-sm outline-none text-center text-xl tracking-[0.3em]" style={inputStyle} maxLength={6} />
-          <input type="password" placeholder="Confirm PIN" value={form.confirmPin ?? ''} onChange={e => setForm({ ...form, confirmPin: e.target.value })} className="w-full px-4 py-3 rounded-xl border text-sm outline-none text-center text-xl tracking-[0.3em]" style={inputStyle} maxLength={6} />
+          <input type="password" placeholder="New PIN (min 4 digits)" value={form.newPin ?? ''} onChange={e => setForm({ ...form, newPin: e.target.value })} className={`${inputClasses} text-center text-xl tracking-[0.3em]`} maxLength={6} />
+          <input type="password" placeholder="Confirm PIN" value={form.confirmPin ?? ''} onChange={e => setForm({ ...form, confirmPin: e.target.value })} className={`${inputClasses} text-center text-xl tracking-[0.3em]`} maxLength={6} />
         </>;
       case 'deleteCompleted':
         return (
           <div className="space-y-3">
-            <div className="p-4 rounded-xl text-sm" style={{ background: 'rgba(239,68,68,0.1)', color: '#ef4444' }}>
-              ⚠️ This will permanently delete {completedMatches.length} completed match{completedMatches.length !== 1 ? 'es' : ''}.
+            <div className="p-4 rounded-lg text-sm bg-red-50 text-red-500">
+              Warning: This will permanently delete {completedMatches.length} completed match{completedMatches.length !== 1 ? 'es' : ''}.
             </div>
             {completedMatches.slice(0, 5).map(m => {
               const tA = teams.find(t => t.id === m.teamAId);
               const tB = teams.find(t => t.id === m.teamBId);
               return (
-                <div key={m.id} className="text-xs px-3 py-2 rounded-lg flex justify-between" style={{ background: 'var(--color-surface-2)', color: 'var(--color-text-muted)' }}>
+                <div key={m.id} className="text-xs px-3 py-2 rounded-lg flex justify-between bg-gray-50 text-gray-500">
                   <span>{tA?.name} vs {tB?.name}</span>
                   <span>{m.scoreA}-{m.scoreB}</span>
                 </div>
               );
             })}
             {completedMatches.length > 5 && (
-              <p className="text-xs text-muted text-center">...and {completedMatches.length - 5} more</p>
+              <p className="text-xs text-gray-500 text-center">...and {completedMatches.length - 5} more</p>
             )}
           </div>
         );
@@ -316,15 +312,15 @@ export default function AdminPortal() {
     <Layout>
       <div className="mb-8 flex items-start sm:items-center justify-between gap-3">
         <div className="min-w-0">
-          <h1 className="font-display font-bold text-2xl sm:text-3xl gradient-text mb-1">
+          <h1 className="font-display font-bold text-2xl sm:text-3xl text-blue-600 font-extrabold mb-1">
             {isUmpire ? 'Umpire Panel' : 'Admin Portal'}
           </h1>
-          <p className="text-muted text-sm">
+          <p className="text-gray-500 text-sm">
             {isUmpire ? 'Match control center' : 'Tournament control center'}
           </p>
         </div>
         <button onClick={() => { logout(); navigate('/'); toast.success('Logged out'); }}
-          className="text-sm text-red-500 hover:text-red-600 border border-red-500/30 px-3 py-2 rounded-lg transition-colors flex-shrink-0">
+          className="text-sm text-red-500 hover:text-red-600 border border-red-200 px-3 py-2 rounded-lg transition-colors flex-shrink-0 hover:bg-red-50">
           Logout
         </button>
       </div>
@@ -333,38 +329,38 @@ export default function AdminPortal() {
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-8">
         {[
           { value: teams.length, label: 'Teams', color: '#2563EB' },
-          { value: players.length, label: 'Players', color: '#7C3AED' },
+          { value: players.length, label: 'Players', color: '#2563EB' },
           { value: liveMatches.length, label: 'Live', color: '#ef4444' },
-          { value: upcomingMatches.length, label: 'Upcoming', color: '#F97316' },
+          { value: upcomingMatches.length, label: 'Upcoming', color: '#2563EB' },
         ].map((s) => (
-          <div key={s.label} className="surface rounded-xl p-4 text-center">
+          <div key={s.label} className="bg-white rounded-xl border border-gray-200 p-4 text-center">
             <div className="font-bold text-2xl font-display" style={{ color: s.color }}>{s.value}</div>
-            <div className="text-xs text-muted">{s.label}</div>
+            <div className="text-xs text-gray-500">{s.label}</div>
           </div>
         ))}
       </div>
 
       {/* Action buttons */}
-      <h2 className="font-semibold mb-4" style={{ color: 'var(--color-text)' }}>Quick Actions</h2>
+      <h2 className="font-semibold mb-4 text-gray-900">Quick Actions</h2>
       <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4 mb-8">
         {actions.map((a, i) => (
           <motion.button key={a.id}
             initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}
             transition={{ delay: i * 0.05 }}
-            whileHover={{ y: -4, boxShadow: `0 16px 40px ${a.color}30` }}
+            whileHover={{ y: -2 }}
             whileTap={{ scale: 0.96 }}
             onClick={() => handleAction(a.id)}
-            className="surface rounded-2xl p-5 flex flex-col items-center gap-2 text-center cursor-pointer"
+            className="bg-white rounded-2xl border border-gray-200 p-5 flex flex-col items-center gap-2 text-center cursor-pointer hover:shadow-md transition-shadow"
           >
             <div className="text-2xl sm:text-3xl">{a.icon}</div>
             <div className="font-semibold text-xs sm:text-sm" style={{ color: a.color }}>{a.label}</div>
-            <div className="text-[10px] sm:text-xs text-muted">{a.desc}</div>
+            <div className="text-[10px] sm:text-xs text-gray-500">{a.desc}</div>
           </motion.button>
         ))}
       </div>
 
       {/* Umpire links */}
-      <h2 className="font-semibold mb-4" style={{ color: 'var(--color-text)' }}>Umpire Screens</h2>
+      <h2 className="font-semibold mb-4 text-gray-900">Umpire Screens</h2>
       <div className="grid sm:grid-cols-2 gap-3">
         {liveMatches.map((m) => {
           const tA = teams.find(t => t.id === m.teamAId);
@@ -372,22 +368,22 @@ export default function AdminPortal() {
           return (
             <Link key={m.id} to={`/umpire/${m.id}`}>
               <motion.div whileHover={{ y: -2 }}
-                className="surface rounded-xl px-4 py-3 flex items-center justify-between border-l-4 transition-shadow hover:shadow-lg"
+                className="bg-white rounded-xl border border-gray-200 px-4 py-3 flex items-center justify-between border-l-4 transition-shadow hover:shadow-md"
                 style={{ borderLeftColor: '#ef4444' }}>
                 <div>
-                  <div className="font-medium text-sm" style={{ color: 'var(--color-text)' }}>{tA?.name} vs {tB?.name}</div>
-                  <div className="text-xs text-muted capitalize">{m.game} · {m.court}</div>
+                  <div className="font-medium text-sm text-gray-900">{tA?.name} vs {tB?.name}</div>
+                  <div className="text-xs text-gray-500 capitalize">{m.game} · {m.court}</div>
                 </div>
                 <div className="flex items-center gap-2">
-                  <span className="font-bold" style={{ color: 'var(--color-text)' }}>{m.scoreA}–{m.scoreB}</span>
-                  <Zap className="w-4 h-4 text-brand-orange" />
+                  <span className="font-bold text-gray-900">{m.scoreA}–{m.scoreB}</span>
+                  <Zap className="w-4 h-4 text-blue-600" />
                 </div>
               </motion.div>
             </Link>
           );
         })}
         {liveMatches.length === 0 && (
-          <div className="col-span-2 surface rounded-xl p-6 text-center text-muted text-sm">
+          <div className="col-span-2 bg-white rounded-xl border border-gray-200 p-6 text-center text-gray-500 text-sm">
             No live matches — start a match to open umpire screen
           </div>
         )}
@@ -396,19 +392,18 @@ export default function AdminPortal() {
       {/* Modal */}
       {modal && (
         <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }}
-          className="fixed inset-0 z-50 flex items-center justify-center p-4"
-          style={{ background: 'rgba(0,0,0,0.7)' }}
+          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50"
           onClick={closeModal}>
           <motion.div initial={{ scale: 0.9, y: 20 }} animate={{ scale: 1, y: 0 }}
             onClick={(e) => e.stopPropagation()}
-            className="surface rounded-3xl p-6 w-full max-w-sm max-h-[80vh] overflow-y-auto">
-            <h3 className="font-bold text-lg mb-4" style={{ color: 'var(--color-text)' }}>{modalTitle}</h3>
+            className="bg-white rounded-2xl shadow-xl p-6 w-full max-w-sm max-h-[80vh] overflow-y-auto">
+            <h3 className="font-bold text-lg mb-4 text-gray-900">{modalTitle}</h3>
             <div className="space-y-3">
               {renderModalContent()}
             </div>
             <div className="flex gap-3 mt-5">
-              <button onClick={closeModal} className="flex-1 py-3 rounded-xl border text-sm font-medium transition-colors hover:bg-red-500/10 hover:text-red-500" style={{ borderColor: 'var(--color-border)', color: 'var(--color-text-muted)' }}>Cancel</button>
-              <button onClick={handleSubmit} className="flex-1 py-3 rounded-xl text-sm font-semibold text-white" style={{ background: modal === 'deletePlayer' || modal === 'deleteTeam' || modal === 'deleteCompleted' ? 'linear-gradient(135deg,#ef4444,#dc2626)' : 'linear-gradient(135deg,#2563EB,#7C3AED)' }}>
+              <button onClick={closeModal} className="flex-1 py-3 rounded-lg border border-gray-200 text-sm font-medium transition-colors hover:bg-red-50 hover:text-red-500 text-gray-500">Cancel</button>
+              <button onClick={handleSubmit} className={`flex-1 py-3 rounded-lg text-sm font-semibold text-white ${modal === 'deletePlayer' || modal === 'deleteTeam' || modal === 'deleteCompleted' ? 'bg-red-500 hover:bg-red-600' : 'bg-blue-600 hover:bg-blue-700'}`}>
                 {modal === 'deletePlayer' || modal === 'deleteTeam' || modal === 'deleteCompleted' ? 'Delete' : 'Confirm'}
               </button>
             </div>

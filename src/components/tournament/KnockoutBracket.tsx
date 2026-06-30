@@ -24,50 +24,49 @@ function BracketMatchCard({ match, teamA, teamB, isChampion }: BracketMatchProps
     <Link to={`/match/${match.id}`}>
       <motion.div
         whileHover={{ scale: 1.03 }}
-        className={`rounded-xl overflow-hidden text-xs min-w-[160px] cursor-pointer transition-all ${
-          isLive ? 'ring-2 ring-red-500' : isDone ? 'ring-1 ring-brand-blue/30' : ''
-        } ${isChampion ? 'champion-glow ring-2 ring-yellow-500' : ''}`}
-        style={{ background: 'var(--color-surface)', border: '1px solid var(--color-border)' }}
+        className={`rounded-xl overflow-hidden text-xs min-w-[160px] cursor-pointer transition-all bg-white border border-gray-200 ${
+          isLive ? 'ring-2 ring-red-500' : isDone ? 'ring-1 ring-blue-200' : ''
+        } ${isChampion ? 'ring-2 ring-yellow-500' : ''}`}
       >
         {isLive && (
-          <div className="px-2 py-1 flex justify-center" style={{ background: 'rgba(239,68,68,0.1)' }}>
+          <div className="px-2 py-1 flex justify-center bg-red-50">
             <LiveBadge size="sm" />
           </div>
         )}
         {isChampion && (
-          <div className="px-2 py-1 text-center text-[10px] font-bold text-yellow-500" style={{ background: 'rgba(234,179,8,0.1)' }}>
+          <div className="px-2 py-1 text-center text-[10px] font-bold text-yellow-600 bg-yellow-50">
             🏆 CHAMPION
           </div>
         )}
 
         {/* Team A */}
-        <div className={`flex items-center justify-between px-3 py-2 ${match.winner === teamA?.id ? 'font-bold' : ''}`}
-          style={{ background: match.winner === teamA?.id ? `${teamA?.color}18` : 'transparent', borderBottom: '1px solid var(--color-border)' }}>
+        <div className={`flex items-center justify-between px-3 py-2 border-b border-gray-200 ${match.winner === teamA?.id ? 'font-bold' : ''}`}
+          style={{ background: match.winner === teamA?.id ? `${teamA?.color}12` : 'transparent' }}>
           <div className="flex items-center gap-1.5">
             <span className="w-5 h-5 rounded text-white text-[9px] font-bold flex items-center justify-center flex-shrink-0" style={{ background: teamA?.color ?? '#64748b' }}>
               {teamA?.logo ?? '?'}
             </span>
-            <span className="truncate max-w-[90px]" style={{ color: match.winner === teamA?.id ? teamA?.color : 'var(--color-text)' }}>
+            <span className="truncate max-w-[90px]" style={{ color: match.winner === teamA?.id ? teamA?.color : '#111827' }}>
               {teamA?.name ?? 'TBD'}
             </span>
           </div>
-          <span className="font-bold tabular-nums ml-2" style={{ color: match.winner === teamA?.id ? teamA?.color : 'var(--color-text)' }}>
+          <span className="font-bold tabular-nums ml-2" style={{ color: match.winner === teamA?.id ? teamA?.color : '#111827' }}>
             {isDone || isLive ? match.scoreA : '-'}
           </span>
         </div>
 
         {/* Team B */}
         <div className={`flex items-center justify-between px-3 py-2 ${match.winner === teamB?.id ? 'font-bold' : ''}`}
-          style={{ background: match.winner === teamB?.id ? `${teamB?.color}18` : 'transparent' }}>
+          style={{ background: match.winner === teamB?.id ? `${teamB?.color}12` : 'transparent' }}>
           <div className="flex items-center gap-1.5">
             <span className="w-5 h-5 rounded text-white text-[9px] font-bold flex items-center justify-center flex-shrink-0" style={{ background: teamB?.color ?? '#64748b' }}>
               {teamB?.logo ?? '?'}
             </span>
-            <span className="truncate max-w-[90px]" style={{ color: match.winner === teamB?.id ? teamB?.color : 'var(--color-text)' }}>
+            <span className="truncate max-w-[90px]" style={{ color: match.winner === teamB?.id ? teamB?.color : '#111827' }}>
               {teamB?.name ?? 'TBD'}
             </span>
           </div>
-          <span className="font-bold tabular-nums ml-2" style={{ color: match.winner === teamB?.id ? teamB?.color : 'var(--color-text)' }}>
+          <span className="font-bold tabular-nums ml-2" style={{ color: match.winner === teamB?.id ? teamB?.color : '#111827' }}>
             {isDone || isLive ? match.scoreB : '-'}
           </span>
         </div>
@@ -79,7 +78,7 @@ function BracketMatchCard({ match, teamA, teamB, isChampion }: BracketMatchProps
 function RoundLabel({ label }: { label: string }) {
   return (
     <div className="text-center mb-4">
-      <span className="text-xs font-bold px-3 py-1 rounded-full text-white" style={{ background: 'linear-gradient(135deg,#2563EB,#7C3AED)' }}>
+      <span className="text-xs font-bold px-3 py-1 rounded-full text-white bg-blue-600">
         {label}
       </span>
     </div>
@@ -89,7 +88,7 @@ function RoundLabel({ label }: { label: string }) {
 function ConnectorV({ height }: { height: number }) {
   return (
     <div className="flex items-center justify-center" style={{ height }}>
-      <div className="w-px h-full" style={{ background: 'linear-gradient(180deg,rgba(37,99,235,0.5),rgba(124,58,237,0.5))' }} />
+      <div className="w-px h-full bg-gray-300" />
     </div>
   );
 }
@@ -121,8 +120,8 @@ export default function KnockoutBracket({ matches, teams }: Props) {
 
           {/* Arrow */}
           <div className="flex items-center self-center mt-8">
-            <div className="w-8 h-px" style={{ background: 'linear-gradient(90deg,#2563EB,#7C3AED)' }} />
-            <div className="w-0 h-0 border-t-4 border-t-transparent border-b-4 border-b-transparent border-l-8" style={{ borderLeftColor: '#7C3AED' }} />
+            <div className="w-8 h-px bg-blue-400" />
+            <div className="w-0 h-0 border-t-4 border-t-transparent border-b-4 border-b-transparent border-l-8 border-l-blue-400" />
           </div>
 
           {/* QF */}
@@ -137,8 +136,8 @@ export default function KnockoutBracket({ matches, teams }: Props) {
 
           {/* Arrow */}
           <div className="flex items-center self-center mt-8">
-            <div className="w-8 h-px" style={{ background: 'linear-gradient(90deg,#2563EB,#7C3AED)' }} />
-            <div className="w-0 h-0 border-t-4 border-t-transparent border-b-4 border-b-transparent border-l-8" style={{ borderLeftColor: '#7C3AED' }} />
+            <div className="w-8 h-px bg-blue-400" />
+            <div className="w-0 h-0 border-t-4 border-t-transparent border-b-4 border-b-transparent border-l-8 border-l-blue-400" />
           </div>
 
           {/* SF */}
@@ -153,8 +152,8 @@ export default function KnockoutBracket({ matches, teams }: Props) {
 
           {/* Arrow */}
           <div className="flex items-center self-center mt-8">
-            <div className="w-8 h-px" style={{ background: 'linear-gradient(90deg,#2563EB,#7C3AED)' }} />
-            <div className="w-0 h-0 border-t-4 border-t-transparent border-b-4 border-b-transparent border-l-8" style={{ borderLeftColor: '#7C3AED' }} />
+            <div className="w-8 h-px bg-blue-400" />
+            <div className="w-0 h-0 border-t-4 border-t-transparent border-b-4 border-b-transparent border-l-8 border-l-blue-400" />
           </div>
 
           {/* Final */}
@@ -176,8 +175,8 @@ export default function KnockoutBracket({ matches, teams }: Props) {
           {champion && (
             <>
               <div className="flex items-center self-center mt-8">
-                <div className="w-8 h-px" style={{ background: 'linear-gradient(90deg,#F97316,#fbbf24)' }} />
-                <div className="w-0 h-0 border-t-4 border-t-transparent border-b-4 border-b-transparent border-l-8" style={{ borderLeftColor: '#fbbf24' }} />
+                <div className="w-8 h-px bg-yellow-400" />
+                <div className="w-0 h-0 border-t-4 border-t-transparent border-b-4 border-b-transparent border-l-8 border-l-yellow-400" />
               </div>
               <div className="flex flex-col gap-2">
                 <RoundLabel label="Champion" />
@@ -185,15 +184,14 @@ export default function KnockoutBracket({ matches, teams }: Props) {
                   initial={{ scale: 0.8, opacity: 0 }}
                   animate={{ scale: 1, opacity: 1 }}
                   transition={{ duration: 0.6, type: 'spring' }}
-                  className="mt-52 rounded-2xl p-4 text-center champion-glow"
-                  style={{ background: 'linear-gradient(135deg,rgba(234,179,8,0.15),rgba(249,115,22,0.15))', border: '2px solid rgba(234,179,8,0.5)' }}
+                  className="mt-52 rounded-2xl p-4 text-center bg-yellow-50 border-2 border-yellow-300"
                 >
                   <Trophy className="w-8 h-8 text-yellow-500 mx-auto mb-2" />
                   <div className="w-10 h-10 rounded-xl flex items-center justify-center text-white font-bold text-lg mx-auto mb-2" style={{ background: champion.color }}>
                     {champion.logo}
                   </div>
-                  <div className="font-bold text-sm text-yellow-500">{champion.name}</div>
-                  <div className="text-xs text-muted capitalize">{champion.game}</div>
+                  <div className="font-bold text-sm text-yellow-600">{champion.name}</div>
+                  <div className="text-xs text-gray-500 capitalize">{champion.game}</div>
                 </motion.div>
               </div>
             </>

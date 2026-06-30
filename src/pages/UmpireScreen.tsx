@@ -27,7 +27,7 @@ export default function UmpireScreen() {
     if (!match) return;
     updateScore(match.id, scoreA, scoreB);
     setSaved(true);
-    toast.success('💾 Score saved!', { duration: 1200 });
+    toast.success('Score saved!', { duration: 1200 });
   };
 
   useAutoSave([scoreA, scoreB], doSave, 800);
@@ -36,11 +36,11 @@ export default function UmpireScreen() {
 
   if (!isAdmin) {
     return (
-      <div className="min-h-screen flex items-center justify-center" style={{ background: 'var(--color-bg)' }}>
+      <div className="min-h-screen flex items-center justify-center bg-gray-50">
         <div className="text-center p-8">
-          <Shield className="w-12 h-12 mx-auto mb-4 text-muted opacity-40" />
-          <p className="text-muted">Umpire access required.</p>
-          <Link to="/login" className="text-brand-blue hover:underline text-sm mt-2 block">Login →</Link>
+          <Shield className="w-12 h-12 mx-auto mb-4 text-gray-400" />
+          <p className="text-gray-500">Umpire access required.</p>
+          <Link to="/login" className="text-blue-600 hover:underline text-sm mt-2 block">Login →</Link>
         </div>
       </div>
     );
@@ -48,10 +48,10 @@ export default function UmpireScreen() {
 
   if (!match || !teamA || !teamB) {
     return (
-      <div className="min-h-screen flex items-center justify-center" style={{ background: 'var(--color-bg)' }}>
+      <div className="min-h-screen flex items-center justify-center bg-gray-50">
         <div className="text-center p-8">
-          <p className="text-muted">Match not found.</p>
-          <Link to="/admin" className="text-brand-blue hover:underline text-sm mt-2 block">← Admin</Link>
+          <p className="text-gray-500">Match not found.</p>
+          <Link to="/admin" className="text-blue-600 hover:underline text-sm mt-2 block">← Admin</Link>
         </div>
       </div>
     );
@@ -60,7 +60,7 @@ export default function UmpireScreen() {
   const handleFinish = (winner: string) => {
     doSave();
     finishMatch(match.id, winner);
-    toast.success('🏆 Match completed!');
+    toast.success('Match completed!');
     setShowFinish(false);
   };
 
@@ -73,25 +73,24 @@ export default function UmpireScreen() {
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
-    boxShadow: `0 8px 24px ${color}60`,
     transition: 'all 0.15s',
   });
 
   return (
-    <div className="min-h-screen flex flex-col" style={{ background: 'linear-gradient(135deg,#020617,#0d1b4b,#1e0a3c)' }}>
+    <div className="min-h-screen flex flex-col bg-white">
       {/* Header */}
-      <div className="flex items-center justify-between px-4 py-4 border-b border-white/10">
-        <Link to="/admin" className="flex items-center gap-2 text-white/60 hover:text-white">
+      <div className="flex items-center justify-between px-4 py-4 border-b border-gray-200">
+        <Link to="/admin" className="flex items-center gap-2 text-gray-400 hover:text-gray-900">
           <ArrowLeft className="w-5 h-5" />
         </Link>
         <div className="text-center">
-          <div className="text-white/50 text-xs capitalize">{match.game} · {match.round}</div>
-          <div className="text-white text-sm font-semibold">{match.court}</div>
+          <div className="text-gray-500 text-xs capitalize">{match.game} · {match.round}</div>
+          <div className="text-gray-900 text-sm font-semibold">{match.court}</div>
         </div>
         <div className="flex items-center gap-1.5">
           <motion.div animate={{ scale: [1, 1.3, 1] }} transition={{ duration: 1, repeat: Infinity }}
             className="w-2 h-2 rounded-full bg-red-500" />
-          <span className="text-xs text-red-400 font-bold">LIVE</span>
+          <span className="text-xs text-red-500 font-bold">LIVE</span>
         </div>
       </div>
 
@@ -102,8 +101,8 @@ export default function UmpireScreen() {
           <div className="flex items-center justify-center gap-3 mb-4">
             <div className="w-14 h-14 rounded-2xl flex items-center justify-center text-white font-bold text-xl" style={{ background: teamA.color }}>{teamA.logo}</div>
             <div className="text-left">
-              <div className="text-white font-semibold">{teamA.name}</div>
-              <div className="text-white/40 text-xs capitalize">{teamA.game ?? match.game}</div>
+              <div className="text-gray-900 font-semibold">{teamA.name}</div>
+              <div className="text-gray-400 text-xs capitalize">{teamA.game ?? match.game}</div>
             </div>
           </div>
           <motion.div key={scoreA} initial={{ scale: 1.3 }} animate={{ scale: 1 }}
@@ -114,7 +113,7 @@ export default function UmpireScreen() {
             <motion.button whileTap={{ scale: 0.9 }}
               onClick={() => setScoreA(Math.max(0, scoreA - 1))}
               className="w-16 h-16 sm:w-20 sm:h-20"
-              style={{ ...btnStyle('#374151') }}>
+              style={{ ...btnStyle('#9ca3af') }}>
               <Minus className="w-7 h-7 sm:w-8 sm:h-8" />
             </motion.button>
             <motion.button whileTap={{ scale: 0.9 }}
@@ -128,9 +127,9 @@ export default function UmpireScreen() {
 
         {/* Divider */}
         <div className="flex items-center gap-4 my-2">
-          <div className="flex-1 h-px bg-white/10" />
-          <span className="text-white/30 text-sm font-bold">VS</span>
-          <div className="flex-1 h-px bg-white/10" />
+          <div className="flex-1 h-px bg-gray-200" />
+          <span className="text-gray-300 text-sm font-bold">VS</span>
+          <div className="flex-1 h-px bg-gray-200" />
         </div>
 
         {/* Team B */}
@@ -138,8 +137,8 @@ export default function UmpireScreen() {
           <div className="flex items-center justify-center gap-3 mb-4">
             <div className="w-14 h-14 rounded-2xl flex items-center justify-center text-white font-bold text-xl" style={{ background: teamB.color }}>{teamB.logo}</div>
             <div className="text-left">
-              <div className="text-white font-semibold">{teamB.name}</div>
-              <div className="text-white/40 text-xs capitalize">{teamB.game ?? match.game}</div>
+              <div className="text-gray-900 font-semibold">{teamB.name}</div>
+              <div className="text-gray-400 text-xs capitalize">{teamB.game ?? match.game}</div>
             </div>
           </div>
           <motion.div key={scoreB} initial={{ scale: 1.3 }} animate={{ scale: 1 }}
@@ -150,7 +149,7 @@ export default function UmpireScreen() {
             <motion.button whileTap={{ scale: 0.9 }}
               onClick={() => setScoreB(Math.max(0, scoreB - 1))}
               className="w-16 h-16 sm:w-20 sm:h-20"
-              style={{ ...btnStyle('#374151') }}>
+              style={{ ...btnStyle('#9ca3af') }}>
               <Minus className="w-7 h-7 sm:w-8 sm:h-8" />
             </motion.button>
             <motion.button whileTap={{ scale: 0.9 }}
@@ -166,15 +165,13 @@ export default function UmpireScreen() {
         <div className="mt-4 space-y-3">
           <div className="flex gap-3">
             <motion.button whileTap={{ scale: 0.97 }}
-              onClick={() => { undoScore(match.id); toast('↩ Undone', { icon: '↩' }); }}
-              className="flex-1 py-4 rounded-2xl flex items-center justify-center gap-2 font-semibold text-white/60 border border-white/10"
-              style={{ background: 'rgba(255,255,255,0.05)' }}>
+              onClick={() => { undoScore(match.id); toast('Undone', { icon: '↩' }); }}
+              className="flex-1 py-4 rounded-2xl flex items-center justify-center gap-2 font-semibold text-gray-500 border border-gray-200 hover:bg-gray-50">
               <Undo className="w-5 h-5" /> Undo
             </motion.button>
             <motion.button whileTap={{ scale: 0.97 }}
               onClick={doSave}
-              className="flex-1 py-4 rounded-2xl flex items-center justify-center gap-2 font-semibold"
-              style={{ background: saved ? 'rgba(5,150,105,0.2)' : 'linear-gradient(135deg,#2563EB,#7C3AED)', color: saved ? '#10b981' : 'white' }}>
+              className={`flex-1 py-4 rounded-2xl flex items-center justify-center gap-2 font-semibold ${saved ? 'bg-green-50 text-green-600' : 'bg-blue-600 text-white'}`}>
               {saved ? <CheckCircle className="w-5 h-5" /> : <Save className="w-5 h-5" />}
               {saved ? 'Saved' : 'Save'}
             </motion.button>
@@ -182,46 +179,43 @@ export default function UmpireScreen() {
 
           <motion.button whileTap={{ scale: 0.97 }}
             onClick={() => setShowFinish(true)}
-            className="w-full py-5 rounded-2xl flex items-center justify-center gap-3 font-bold text-lg"
-            style={{ background: 'linear-gradient(135deg,#d97706,#b45309)', color: 'white', boxShadow: '0 8px 24px rgba(217,119,6,0.4)' }}>
+            className="w-full py-5 rounded-2xl flex items-center justify-center gap-3 font-bold text-lg bg-yellow-500 text-white hover:bg-yellow-600 shadow-md">
             <Trophy className="w-6 h-6" /> Finish Match & Declare Winner
           </motion.button>
         </div>
 
         {/* Auto-save indicator */}
         <div className="text-center">
-          <span className="text-xs text-white/20">Auto-saves every change • Umpire Mode</span>
+          <span className="text-xs text-gray-400">Auto-saves every change · Umpire Mode</span>
         </div>
       </div>
 
       {/* Finish Match Modal */}
       {showFinish && (
         <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }}
-          className="fixed inset-0 z-50 flex items-end justify-center p-4"
-          style={{ background: 'rgba(0,0,0,0.85)' }}>
+          className="fixed inset-0 z-50 flex items-end justify-center p-4 bg-black/50">
           <motion.div initial={{ y: 100 }} animate={{ y: 0 }}
-            className="w-full max-w-sm rounded-3xl p-6"
-            style={{ background: '#0f172a', border: '1px solid rgba(255,255,255,0.1)' }}>
-            <h3 className="font-bold text-white text-xl text-center mb-2">Declare Winner</h3>
-            <p className="text-white/40 text-sm text-center mb-6">Final Score: {scoreA} – {scoreB}</p>
+            className="w-full max-w-sm rounded-2xl p-6 bg-white border border-gray-200 shadow-xl">
+            <h3 className="font-bold text-gray-900 text-xl text-center mb-2">Declare Winner</h3>
+            <p className="text-gray-500 text-sm text-center mb-6">Final Score: {scoreA} – {scoreB}</p>
             <div className="flex gap-4">
               <motion.button whileTap={{ scale: 0.95 }}
                 onClick={() => handleFinish(teamA.id)}
                 className="flex-1 py-5 rounded-2xl flex flex-col items-center gap-2 font-bold text-white"
-                style={{ background: teamA.color, boxShadow: `0 4px 20px ${teamA.color}50` }}>
+                style={{ background: teamA.color }}>
                 <span className="text-2xl">{teamA.logo}</span>
                 <span className="text-sm">{teamA.name}</span>
               </motion.button>
               <motion.button whileTap={{ scale: 0.95 }}
                 onClick={() => handleFinish(teamB.id)}
                 className="flex-1 py-5 rounded-2xl flex flex-col items-center gap-2 font-bold text-white"
-                style={{ background: teamB.color, boxShadow: `0 4px 20px ${teamB.color}50` }}>
+                style={{ background: teamB.color }}>
                 <span className="text-2xl">{teamB.logo}</span>
                 <span className="text-sm">{teamB.name}</span>
               </motion.button>
             </div>
             <button onClick={() => setShowFinish(false)}
-              className="w-full mt-4 py-3 text-white/40 text-sm hover:text-white/60 transition-colors">
+              className="w-full mt-4 py-3 text-gray-400 text-sm hover:text-gray-600 transition-colors">
               Cancel
             </button>
           </motion.div>

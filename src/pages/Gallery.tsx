@@ -36,13 +36,13 @@ export default function Gallery() {
       <div className="mb-8 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
         <div>
           <div className="flex items-center gap-3 mb-2">
-            <Camera className="w-7 h-7 text-brand-purple" />
-            <h1 className="font-display font-bold text-3xl gradient-text">Gallery</h1>
+            <Camera className="w-7 h-7 text-blue-600" />
+            <h1 className="font-display font-bold text-3xl text-blue-600 font-extrabold">Gallery</h1>
           </div>
-          <p className="text-muted text-sm">{gallery.length} photos from Josh Tournament 2026</p>
+          <p className="text-gray-500 text-sm">{gallery.length} photos from Josh Tournament 2026</p>
         </div>
         {isAdmin && (
-          <button onClick={handleUpload} className="btn-primary flex items-center gap-2 text-sm">
+          <button onClick={handleUpload} className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 flex items-center gap-2 text-sm font-semibold">
             <Upload className="w-4 h-4" /> Upload Photo
           </button>
         )}
@@ -52,12 +52,11 @@ export default function Gallery() {
       <div className="flex flex-wrap gap-2 mb-8">
         {CATEGORIES.map((c) => (
           <button key={c} onClick={() => setCat(c)}
-            className="px-4 py-2 rounded-xl text-sm font-medium capitalize transition-colors"
-            style={{
-              background: cat === c ? 'linear-gradient(135deg,#7C3AED,#F97316)' : 'var(--color-surface)',
-              color: cat === c ? 'white' : 'var(--color-text-muted)',
-              border: cat === c ? 'none' : '1px solid var(--color-border)',
-            }}>
+            className={`px-4 py-2 rounded-lg text-sm font-medium capitalize transition-colors ${
+              cat === c
+                ? 'bg-blue-600 text-white'
+                : 'bg-white text-gray-600 border border-gray-200 hover:bg-gray-50'
+            }`}>
             {c === 'all' ? `All (${gallery.length})` : c}
           </button>
         ))}
@@ -80,7 +79,7 @@ export default function Gallery() {
               </div>
             </div>
             {isAdmin && (
-              <button onClick={(e) => { e.stopPropagation(); deletePhoto(item.id); toast.success('🗑️ Photo deleted'); }}
+              <button onClick={(e) => { e.stopPropagation(); deletePhoto(item.id); toast.success('Photo deleted'); }}
                 className="absolute top-2 right-2 w-8 h-8 rounded-full bg-red-500/80 flex items-center justify-center text-white opacity-0 group-hover:opacity-100 transition-opacity hover:bg-red-600">
                 <Trash2 className="w-4 h-4" />
               </button>
@@ -90,9 +89,9 @@ export default function Gallery() {
       </div>
 
       {filtered.length === 0 && (
-        <div className="surface rounded-2xl p-12 text-center">
-          <Image className="w-12 h-12 mx-auto mb-3 text-muted opacity-40" />
-          <p className="text-muted">No photos in this category</p>
+        <div className="bg-white rounded-2xl border border-gray-200 p-12 text-center">
+          <Image className="w-12 h-12 mx-auto mb-3 text-gray-500 opacity-40" />
+          <p className="text-gray-500">No photos in this category</p>
         </div>
       )}
 

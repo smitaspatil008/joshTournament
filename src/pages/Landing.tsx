@@ -1,6 +1,7 @@
+import { useEffect, useRef, useState } from 'react';
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
-import { Trophy, Calendar, Users, TrendingUp, Bell, ArrowRight, Play, Target, Brain, Award, Gamepad2 } from 'lucide-react';
+import { Trophy, Calendar, Users, TrendingUp, Bell, ArrowRight, Play, Target, Brain, Award, Gamepad2, Zap } from 'lucide-react';
 import Layout from '../components/layout/Layout';
 import LiveBadge from '../components/ui/LiveBadge';
 import CountdownTimer from '../components/ui/CountdownTimer';
@@ -12,54 +13,30 @@ const ANNOUNCEMENT_ICONS: Record<string, string> = {
   match: '⚡', winner: '🏆', champion: '🎉', info: '📢',
 };
 
-function CarromBoard() {
-  return (
-    <div className="flex flex-col items-center gap-3">
-      <div className="text-[120px] sm:text-[160px] leading-none select-none">🎯</div>
-      <span className="text-orange-400/60 text-sm sm:text-base font-semibold uppercase tracking-[0.3em]">Carrom</span>
-    </div>
-  );
-}
+function AnimatedCounter({ target, duration = 2000 }: { target: number; duration?: number }) {
+  const [count, setCount] = useState(0);
+  const ref = useRef<HTMLSpanElement>(null);
+  const started = useRef(false);
 
-function PlayingCards() {
-  return (
-    <div className="flex flex-col items-center gap-3">
-      <div className="text-[120px] sm:text-[160px] leading-none select-none">🃏</div>
-      <span className="text-purple-400/60 text-sm sm:text-base font-semibold uppercase tracking-[0.3em]">Sequence</span>
-    </div>
-  );
-}
+  useEffect(() => {
+    const observer = new IntersectionObserver(([entry]) => {
+      if (entry.isIntersecting && !started.current) {
+        started.current = true;
+        const start = performance.now();
+        const step = (now: number) => {
+          const progress = Math.min((now - start) / duration, 1);
+          const eased = 1 - Math.pow(1 - progress, 3);
+          setCount(Math.round(eased * target));
+          if (progress < 1) requestAnimationFrame(step);
+        };
+        requestAnimationFrame(step);
+      }
+    }, { threshold: 0.3 });
+    if (ref.current) observer.observe(ref.current);
+    return () => observer.disconnect();
+  }, [target, duration]);
 
-function FireParticles() {
-  return (
-    <>
-      {[...Array(30)].map((_, i) => (
-        <motion.div
-          key={i}
-          className="absolute rounded-full pointer-events-none"
-          style={{
-            width: `${2 + (i % 4) * 2}px`,
-            height: `${2 + (i % 4) * 2}px`,
-            background: i % 3 === 0 ? '#ff6b00' : i % 3 === 1 ? '#ff9500' : '#ffcc00',
-            left: `${(i * 3.3) % 100}%`,
-            bottom: `${(i * 2.7) % 40}%`,
-            opacity: 0,
-          }}
-          animate={{
-            y: [0, -80 - (i % 5) * 30, -160],
-            opacity: [0, 0.8, 0],
-            scale: [0.5, 1, 0.2],
-          }}
-          transition={{
-            duration: 2 + (i % 3),
-            repeat: Infinity,
-            delay: i * 0.15,
-            ease: 'easeOut',
-          }}
-        />
-      ))}
-    </>
-  );
+  return <span ref={ref}>{count}</span>;
 }
 
 export default function Landing() {
@@ -71,136 +48,126 @@ export default function Landing() {
   const getPlayer = (id: string) => players.find((p) => p.id === id);
 
   const nextMatch = upcoming[0];
+  const completedCount = matches.filter(m => m.status === 'completed').length;
 
   return (
     <Layout noPadding fullWidth>
-      {/* ─── HERO ─────────────────────────────────────────────────────────── */}
-      <section className="relative min-h-[100vh] flex flex-col items-center justify-center overflow-hidden"
-        style={{ background: 'linear-gradient(135deg,#050505 0%,#0a0a1a 30%,#150820 60%,#1a0800 100%)' }}>
-
-        <FireParticles />
-
-        {/* Ambient glow */}
-        <div className="absolute top-0 left-0 w-full h-full pointer-events-none">
-          <div className="absolute top-1/4 left-0 w-64 sm:w-96 h-64 sm:h-96 rounded-full opacity-15" style={{ background: 'radial-gradient(circle,#ff6b00,transparent)', filter: 'blur(80px)' }} />
-          <div className="absolute top-1/3 right-0 w-64 sm:w-96 h-64 sm:h-96 rounded-full opacity-10" style={{ background: 'radial-gradient(circle,#7C3AED,transparent)', filter: 'blur(80px)' }} />
-          <div className="absolute bottom-0 left-1/3 w-80 h-80 rounded-full opacity-8" style={{ background: 'radial-gradient(circle,#ea580c,transparent)', filter: 'blur(100px)' }} />
+      {/* ═══ HERO ═══ */}
+      <section className="relative overflow-hidden bg-gray-900">
+        {/* Abstract geometric background */}
+        <div className="absolute inset-0 pointer-events-none">
+          <div className="absolute inset-0" style={{ background: 'linear-gradient(135deg, #111827 0%, #1e3a5f 50%, #1e1b4b 100%)' }} />
+          {/* Diagonal lines pattern */}
+          <svg className="absolute inset-0 w-full h-full opacity-[0.06]" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+              <pattern id="diag" width="40" height="40" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
+                <line x1="0" y1="0" x2="0" y2="40" stroke="white" strokeWidth="1" />
+              </pattern>
+            </defs>
+            <rect width="100%" height="100%" fill="url(#diag)" />
+          </svg>
+          {/* Accent glow */}
+          <div className="absolute top-0 right-0 w-[600px] h-[600px] opacity-20"
+            style={{ background: 'radial-gradient(circle, #2563eb 0%, transparent 70%)' }} />
+          <div className="absolute bottom-0 left-0 w-[400px] h-[400px] opacity-10"
+            style={{ background: 'radial-gradient(circle, #3b82f6 0%, transparent 70%)' }} />
         </div>
 
-        {/* Game imagery - Left: Carrom, Right: Cards */}
-        <div className="absolute left-8 lg:left-16 top-1/2 -translate-y-1/2 hidden lg:block">
-          <CarromBoard />
-        </div>
+        <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 sm:py-28 lg:py-36">
+          <div className="flex flex-col lg:flex-row items-center gap-12 lg:gap-16">
+            {/* Left content */}
+            <div className="flex-1 text-center lg:text-left">
+              {/* Live pill */}
+              {liveMatches.length > 0 && (
+                <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }}
+                  className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/10 border border-white/10 mb-6">
+                  <LiveBadge size="sm" />
+                  <span className="text-white/70 text-sm font-medium">Tournament is LIVE!</span>
+                </motion.div>
+              )}
 
-        <div className="absolute right-8 lg:right-16 top-1/2 -translate-y-1/2 hidden lg:block">
-          <PlayingCards />
-        </div>
-
-        {/* Content */}
-        <div className="relative z-10 text-center px-4 max-w-3xl mx-auto">
-          {/* Live pill */}
-          <motion.div initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }}
-            className="inline-flex items-center gap-2 px-5 py-2 rounded-full mb-8"
-            style={{ background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.1)', backdropFilter: 'blur(10px)' }}>
-            <LiveBadge size="sm" />
-            <span className="text-white/70 text-xs sm:text-sm">Josh Carrom & Sequence Tournament 2026 is LIVE!</span>
-          </motion.div>
-
-          {/* Title */}
-          <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }}>
-            <h1 className="font-display leading-none mb-3">
-              <span className="block text-3xl sm:text-4xl text-white/90 italic font-light tracking-wide" style={{ fontFamily: "'Rajdhani', sans-serif" }}>Josh</span>
-              <span className="block text-5xl sm:text-7xl md:text-8xl font-black uppercase tracking-tight"
-                style={{ background: 'linear-gradient(180deg, #ff8c00 0%, #ea580c 50%, #c2410c 100%)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', filter: 'drop-shadow(0 2px 8px rgba(234,88,12,0.5))' }}>
-                Carrom
-              </span>
-              <span className="block text-3xl sm:text-4xl text-white/80 font-light my-1">&</span>
-              <span className="block text-5xl sm:text-7xl md:text-8xl font-black uppercase tracking-tight"
-                style={{ background: 'linear-gradient(180deg, #a855f7 0%, #7c3aed 50%, #6d28d9 100%)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', filter: 'drop-shadow(0 2px 8px rgba(124,58,237,0.5))' }}>
-                Sequence
-              </span>
-              <span className="block text-xl sm:text-2xl md:text-3xl font-bold uppercase tracking-[0.2em] mt-2"
-                style={{ background: 'linear-gradient(90deg, #a855f7, #7c3aed)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
+              <motion.h1
+                initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1, duration: 0.5 }}
+                className="text-4xl sm:text-5xl lg:text-6xl xl:text-7xl font-extrabold text-white leading-[1.1] mb-4"
+              >
+                Josh <br />
+                <span className="text-blue-400">Carrom & Sequence</span> <br />
                 Tournament 2026
-              </span>
-            </h1>
-          </motion.div>
+              </motion.h1>
 
-          {/* Tagline */}
-          <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.35 }}
-            className="text-white/40 text-xs sm:text-sm tracking-[0.25em] uppercase mt-4 mb-8">
-            Play Together &bull; Compete Together &bull; Celebrate Together
-          </motion.p>
+              <motion.p
+                initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }}
+                className="text-lg text-white/50 mb-8 max-w-xl mx-auto lg:mx-0">
+                Play Together. Compete Together. Celebrate Together.
+              </motion.p>
 
-          {/* Mobile game images */}
-          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.3 }}
-            className="flex lg:hidden justify-center gap-8 mb-6">
-            <div className="text-7xl select-none">🎯</div>
-            <div className="text-7xl select-none">🃏</div>
-          </motion.div>
+              {/* CTAs */}
+              <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }}
+                className="flex flex-col sm:flex-row gap-3 justify-center lg:justify-start mb-10">
+                <Link to="/live">
+                  <button className="flex items-center justify-center gap-2 w-full sm:w-auto px-7 py-3.5 rounded-xl font-semibold text-white bg-blue-600 hover:bg-blue-700 transition-colors text-sm">
+                    <Play className="w-4 h-4" /> View Live Tournament
+                  </button>
+                </Link>
+                <Link to="/leaderboard">
+                  <button className="flex items-center justify-center gap-2 w-full sm:w-auto px-7 py-3.5 rounded-xl font-semibold text-white bg-white/10 border border-white/20 hover:bg-white/15 transition-colors text-sm">
+                    <Trophy className="w-4 h-4" /> Leaderboard
+                  </button>
+                </Link>
+              </motion.div>
 
-          {/* Stats */}
-          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.4 }}
-            className="inline-flex flex-wrap justify-center items-center gap-0 rounded-2xl overflow-hidden mb-8"
-            style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)', backdropFilter: 'blur(10px)' }}>
-            {[
-              { value: teams.length, label: 'Teams', icon: <Users className="w-4 h-4 text-orange-400" /> },
-              { value: players.length, label: 'Players', icon: <Users className="w-4 h-4 text-blue-400" /> },
-              { value: liveMatches.length, label: 'Live Now', icon: <span className="w-4 h-4 flex items-center justify-center text-red-500 text-xs">●</span> },
-              { value: matches.filter(m => m.status === 'completed').length, label: 'Completed', icon: <span className="text-green-400 text-sm">✓</span> },
-            ].map((s, i) => (
-              <div key={s.label} className="flex flex-col items-center px-3 sm:px-6 py-2 sm:py-4"
-                style={{ borderRight: i < 3 ? '1px solid rgba(255,255,255,0.08)' : 'none' }}>
-                <div className="mb-0.5 sm:mb-1">{s.icon}</div>
-                <div className="text-white font-display font-bold text-base sm:text-2xl">{s.value}</div>
-                <div className="text-white/30 text-[8px] sm:text-[10px] uppercase tracking-wider">{s.label}</div>
+              {/* Stats row */}
+              <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.4 }}
+                className="flex flex-wrap justify-center lg:justify-start gap-8">
+                {[
+                  { value: teams.length, label: 'Teams', icon: <Users className="w-4 h-4 text-blue-400" /> },
+                  { value: players.length, label: 'Players', icon: <Users className="w-4 h-4 text-blue-400" /> },
+                  { value: liveMatches.length, label: 'Live Now', icon: <Zap className="w-4 h-4 text-red-400" /> },
+                  { value: completedCount, label: 'Completed', icon: <Trophy className="w-4 h-4 text-green-400" /> },
+                ].map((s, i) => (
+                  <div key={i} className="text-center lg:text-left">
+                    <div className="flex items-center gap-1.5 mb-0.5">
+                      {s.icon}
+                      <span className="text-2xl font-bold text-white"><AnimatedCounter target={s.value} /></span>
+                    </div>
+                    <span className="text-xs text-white/40 uppercase tracking-wider">{s.label}</span>
+                  </div>
+                ))}
+              </motion.div>
+            </div>
+
+            {/* Right visual */}
+            <motion.div
+              initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} transition={{ delay: 0.3, duration: 0.6 }}
+              className="hidden lg:block flex-shrink-0"
+            >
+              <div className="grid grid-cols-2 gap-4 w-80 xl:w-96">
+                {[
+                  { icon: '🎯', title: 'Carrom', sub: `${teams.filter(t => t.game === 'carrom').length} teams`, bg: 'bg-blue-600/20 border-blue-500/30' },
+                  { icon: '🃏', title: 'Sequence', sub: `${teams.filter(t => t.game === 'sequence').length} teams`, bg: 'bg-indigo-600/20 border-indigo-500/30' },
+                  { icon: '🏆', title: 'Matches', sub: `${matches.length} total`, bg: 'bg-emerald-600/20 border-emerald-500/30' },
+                  { icon: '⚡', title: 'Live', sub: `${liveMatches.length} now`, bg: 'bg-red-600/20 border-red-500/30' },
+                ].map((card, i) => (
+                  <motion.div
+                    key={i}
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.4 + i * 0.1 }}
+                    className={`rounded-2xl border p-6 text-center ${card.bg}`}
+                  >
+                    <div className="text-4xl mb-3">{card.icon}</div>
+                    <div className="text-white font-bold text-sm">{card.title}</div>
+                    <div className="text-white/40 text-xs mt-0.5">{card.sub}</div>
+                  </motion.div>
+                ))}
               </div>
-            ))}
-          </motion.div>
-
-          {/* CTAs */}
-          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.5 }}
-            className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center mb-10">
-            <Link to="/live">
-              <motion.button whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }}
-                className="flex items-center justify-center gap-2 w-full sm:w-auto px-8 py-3.5 rounded-xl font-semibold text-white text-sm sm:text-base"
-                style={{ background: 'linear-gradient(135deg,#ea580c,#dc2626)', boxShadow: '0 4px 20px rgba(234,88,12,0.4)' }}>
-                <Play className="w-4 h-4" /> View Live Tournament
-              </motion.button>
-            </Link>
-            <Link to="/leaderboard">
-              <motion.button whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }}
-                className="flex items-center justify-center gap-2 w-full sm:w-auto px-8 py-3.5 rounded-xl font-semibold text-white text-sm sm:text-base"
-                style={{ background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.15)' }}>
-                <Trophy className="w-4 h-4 text-purple-400" /> Leaderboard
-              </motion.button>
-            </Link>
-          </motion.div>
-
-          {/* Feature strip */}
-          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.6 }}
-            className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4 max-w-2xl mx-auto">
-            {[
-              { icon: <Target className="w-5 h-5 text-orange-400" />, title: 'Teamwork', sub: 'Together We Win' },
-              { icon: <Brain className="w-5 h-5 text-green-400" />, title: 'Strategy', sub: 'Plan. Think. Win.' },
-              { icon: <Award className="w-5 h-5 text-yellow-400" />, title: 'Glory', sub: 'Compete. Conquer.' },
-              { icon: <Gamepad2 className="w-5 h-5 text-purple-400" />, title: 'Fun Unlimited', sub: 'Games. Friends.' },
-            ].map((f) => (
-              <div key={f.title} className="flex items-center gap-2 px-3 py-3 rounded-xl"
-                style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.06)' }}>
-                {f.icon}
-                <div className="text-left">
-                  <div className="text-white/90 text-xs font-semibold uppercase">{f.title}</div>
-                  <div className="text-white/30 text-[10px]">{f.sub}</div>
-                </div>
-              </div>
-            ))}
-          </motion.div>
+            </motion.div>
+          </div>
         </div>
       </section>
 
-      {/* ─── CONTENT ──────────────────────────────────────────────────────── */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 py-12 space-y-16">
+      {/* ═══ CONTENT ═══ */}
+      <div id="content" className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-16 space-y-16">
 
         {/* Live Matches */}
         {liveMatches.length > 0 && (
@@ -208,9 +175,9 @@ export default function Landing() {
             <div className="flex items-center justify-between mb-6">
               <div className="flex items-center gap-3">
                 <LiveBadge />
-                <h2 className="font-display font-bold text-2xl" style={{ color: 'var(--color-text)' }}>Live Matches</h2>
+                <h2 className="font-bold text-2xl text-gray-900">Live Matches</h2>
               </div>
-              <Link to="/live" className="text-sm text-brand-blue hover:underline flex items-center gap-1">
+              <Link to="/live" className="text-sm text-blue-600 hover:underline flex items-center gap-1">
                 View all <ArrowRight className="w-3 h-3" />
               </Link>
             </div>
@@ -229,13 +196,13 @@ export default function Landing() {
         {/* Countdown + Upcoming */}
         {nextMatch && (
           <section className="grid md:grid-cols-2 gap-8 items-start">
-            <div className="surface rounded-3xl p-8 text-center">
-              <h2 className="font-display font-bold text-xl mb-2" style={{ color: 'var(--color-text)' }}>Next Match In</h2>
-              <p className="text-muted text-sm mb-6">
+            <div className="bg-white rounded-2xl border border-gray-200 p-8 text-center">
+              <h2 className="font-bold text-xl text-gray-900 mb-2">Next Match In</h2>
+              <p className="text-gray-500 text-sm mb-6">
                 {teams.find(t => t.id === nextMatch.teamAId)?.name} vs {teams.find(t => t.id === nextMatch.teamBId)?.name}
               </p>
               <CountdownTimer targetDate={nextMatch.scheduledAt} />
-              <div className="mt-4 text-xs text-muted flex items-center justify-center gap-2">
+              <div className="mt-4 text-xs text-gray-400 flex items-center justify-center gap-2">
                 <Calendar className="w-3 h-3" />
                 {new Date(nextMatch.scheduledAt).toLocaleDateString([], { weekday: 'long', month: 'long', day: 'numeric' })}
                 {' · '}{nextMatch.court}
@@ -243,8 +210,8 @@ export default function Landing() {
             </div>
             <div>
               <div className="flex items-center justify-between mb-4">
-                <h2 className="font-display font-bold text-xl" style={{ color: 'var(--color-text)' }}>Upcoming Matches</h2>
-                <Link to="/schedule" className="text-sm text-brand-blue hover:underline flex items-center gap-1">
+                <h2 className="font-bold text-xl text-gray-900">Upcoming Matches</h2>
+                <Link to="/schedule" className="text-sm text-blue-600 hover:underline flex items-center gap-1">
                   Schedule <ArrowRight className="w-3 h-3" />
                 </Link>
               </div>
@@ -268,31 +235,32 @@ export default function Landing() {
         {/* Announcements */}
         <section>
           <div className="flex items-center gap-3 mb-6">
-            <div className="w-9 h-9 rounded-xl flex items-center justify-center text-white" style={{ background: 'linear-gradient(135deg,#F97316,#fb923c)' }}>
+            <div className="w-9 h-9 rounded-lg bg-blue-600 flex items-center justify-center text-white">
               <Bell className="w-5 h-5" />
             </div>
-            <h2 className="font-display font-bold text-2xl" style={{ color: 'var(--color-text)' }}>Announcements</h2>
+            <h2 className="font-bold text-2xl text-gray-900">Announcements</h2>
           </div>
           <div className="space-y-3">
             {announcements.slice(0, 5).map((a, i) => (
               <motion.div
                 key={a.id}
-                initial={{ opacity: 0, x: -20 }}
+                initial={{ opacity: 0, x: -12 }}
                 animate={{ opacity: 1, x: 0 }}
-                transition={{ delay: i * 0.08 }}
-                className="surface rounded-xl px-5 py-4 flex items-start gap-4"
+                transition={{ delay: i * 0.05 }}
+                className="bg-white rounded-xl border border-gray-200 px-5 py-4 flex items-start gap-4 hover:shadow-sm transition-shadow"
               >
                 <span className="text-2xl flex-shrink-0">{ANNOUNCEMENT_ICONS[a.type]}</span>
-                <div className="min-w-0">
-                  <h4 className="font-semibold text-sm" style={{ color: 'var(--color-text)' }}>{a.title}</h4>
-                  <p className="text-sm text-muted mt-0.5">{a.body}</p>
-                  <p className="text-xs text-muted mt-1">{new Date(a.createdAt).toLocaleDateString([], { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' })}</p>
+                <div className="min-w-0 flex-1">
+                  <h4 className="font-semibold text-sm text-gray-900">{a.title}</h4>
+                  <p className="text-sm text-gray-500 mt-0.5">{a.body}</p>
+                  <p className="text-xs text-gray-400 mt-1">{new Date(a.createdAt).toLocaleDateString([], { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' })}</p>
                 </div>
-                <span className={`text-xs px-2 py-0.5 rounded-full flex-shrink-0 ${a.type === 'champion' ? 'bg-yellow-500/15 text-yellow-500' :
-                  a.type === 'winner' ? 'bg-green-500/15 text-green-500' :
-                    a.type === 'match' ? 'bg-red-500/15 text-red-500' :
-                      'bg-blue-500/15 text-blue-500'
-                  }`}>{a.type}</span>
+                <span className={`text-xs px-2 py-0.5 rounded-full flex-shrink-0 font-medium ${
+                  a.type === 'champion' ? 'bg-yellow-50 text-yellow-600' :
+                  a.type === 'winner' ? 'bg-green-50 text-green-600' :
+                  a.type === 'match' ? 'bg-red-50 text-red-600' :
+                  'bg-blue-50 text-blue-600'
+                }`}>{a.type}</span>
               </motion.div>
             ))}
           </div>
@@ -300,19 +268,19 @@ export default function Landing() {
 
         {/* Quick nav */}
         <section>
-          <h2 className="font-display font-bold text-2xl mb-6" style={{ color: 'var(--color-text)' }}>Explore Arena</h2>
+          <h2 className="font-bold text-2xl text-gray-900 mb-6">Explore Arena</h2>
           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4">
             {[
-              { label: 'Carrom', path: '/carrom', icon: '🎯', color: '#ea580c' },
-              { label: 'Sequence', path: '/sequence', icon: '🃏', color: '#7C3AED' },
+              { label: 'Carrom', path: '/carrom', icon: '🎯', color: '#2563EB' },
+              { label: 'Sequence', path: '/sequence', icon: '🃏', color: '#4f46e5' },
               { label: 'Teams', path: '/teams', icon: '🏅', color: '#059669' },
-              { label: 'Players', path: '/players', icon: '👥', color: '#F97316' },
-              { label: 'Gallery', path: '/gallery', icon: '📸', color: '#DB2777' },
-              { label: 'History', path: '/history', icon: '🏆', color: '#D97706' },
+              { label: 'Players', path: '/players', icon: '👥', color: '#2563EB' },
+              { label: 'Gallery', path: '/gallery', icon: '📸', color: '#db2777' },
+              { label: 'History', path: '/history', icon: '🏆', color: '#d97706' },
             ].map((n) => (
               <Link key={n.path} to={n.path}>
-                <motion.div whileHover={{ y: -4, scale: 1.03 }}
-                  className="surface rounded-2xl p-5 text-center cursor-pointer transition-shadow hover:shadow-lg">
+                <motion.div whileHover={{ y: -3 }}
+                  className="bg-white rounded-xl border border-gray-200 p-5 text-center cursor-pointer hover:shadow-md transition-shadow">
                   <div className="text-3xl mb-2">{n.icon}</div>
                   <div className="font-semibold text-sm" style={{ color: n.color }}>{n.label}</div>
                 </motion.div>

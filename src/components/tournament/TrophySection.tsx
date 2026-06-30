@@ -11,15 +11,14 @@ interface Props {
 
 export default function TrophySection({ champion, runnerUp, year = 2026, showConfetti }: Props) {
   return (
-    <div className="relative text-center py-12 overflow-hidden rounded-3xl"
-      style={{ background: 'linear-gradient(135deg,rgba(37,99,235,0.08),rgba(124,58,237,0.12),rgba(249,115,22,0.08))' }}>
+    <div className="relative text-center py-12 overflow-hidden rounded-3xl bg-blue-50">
       {/* Background particles */}
       {[...Array(12)].map((_, i) => (
         <div
           key={i}
-          className="absolute w-2 h-2 rounded-full opacity-30 particle"
+          className="absolute w-2 h-2 rounded-full opacity-20 particle"
           style={{
-            background: i % 3 === 0 ? '#2563EB' : i % 3 === 1 ? '#7C3AED' : '#F97316',
+            background: '#2563EB',
             left: `${(i * 8.5) % 100}%`,
             top: `${(i * 13) % 80 + 10}%`,
             '--dur': `${3 + (i % 3)}s`,
@@ -39,7 +38,7 @@ export default function TrophySection({ champion, runnerUp, year = 2026, showCon
             animate={{ scale: [1, 1.3, 1], opacity: [0.4, 0.8, 0.4] }}
             transition={{ duration: 2, repeat: Infinity }}
             className="absolute inset-0 rounded-full"
-            style={{ background: 'radial-gradient(circle,rgba(234,179,8,0.3),transparent)', filter: 'blur(8px)' }}
+            style={{ background: 'radial-gradient(circle,rgba(234,179,8,0.2),transparent)', filter: 'blur(8px)' }}
           />
           {[...Array(6)].map((_, i) => (
             <motion.div
@@ -62,11 +61,11 @@ export default function TrophySection({ champion, runnerUp, year = 2026, showCon
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.2 }}
-        className="font-display font-bold text-3xl gradient-text mb-1"
+        className="font-display font-extrabold text-3xl text-blue-600 mb-1"
       >
         JOSH Tournament {year}
       </motion.h2>
-      <p className="text-muted text-sm mb-6">Play. Compete. Celebrate.</p>
+      <p className="text-gray-500 text-sm mb-6">Play. Compete. Celebrate.</p>
 
       {champion ? (
         <div className="flex flex-col sm:flex-row items-center justify-center gap-6">
@@ -79,18 +78,18 @@ export default function TrophySection({ champion, runnerUp, year = 2026, showCon
           >
             <div className="relative">
               <Crown className="w-6 h-6 text-yellow-500 mx-auto mb-1" />
-              <div className="w-20 h-20 rounded-2xl flex items-center justify-center text-white font-display font-bold text-2xl champion-glow"
+              <div className="w-20 h-20 rounded-2xl flex items-center justify-center text-white font-display font-bold text-2xl shadow-sm"
                 style={{ background: champion.color }}>
                 {champion.logo}
               </div>
             </div>
-            <div className="mt-2 font-bold" style={{ color: 'var(--color-text)' }}>{champion.name}</div>
-            <div className="text-xs text-yellow-500 font-semibold">🏆 Champion</div>
+            <div className="mt-2 font-bold text-gray-900">{champion.name}</div>
+            <div className="text-xs text-yellow-600 font-semibold">🏆 Champion</div>
           </motion.div>
 
           {runnerUp && (
             <>
-              <div className="text-muted text-sm hidden sm:block">vs</div>
+              <div className="text-gray-500 text-sm hidden sm:block">vs</div>
               <motion.div
                 initial={{ opacity: 0, scale: 0.9 }}
                 animate={{ opacity: 1, scale: 1 }}
@@ -101,14 +100,14 @@ export default function TrophySection({ champion, runnerUp, year = 2026, showCon
                   style={{ background: runnerUp.color }}>
                   {runnerUp.logo}
                 </div>
-                <div className="mt-2 font-semibold text-sm" style={{ color: 'var(--color-text)' }}>{runnerUp.name}</div>
-                <div className="text-xs text-muted">🥈 Runner-up</div>
+                <div className="mt-2 font-semibold text-sm text-gray-900">{runnerUp.name}</div>
+                <div className="text-xs text-gray-500">🥈 Runner-up</div>
               </motion.div>
             </>
           )}
         </div>
       ) : (
-        <div className="text-muted text-sm">Tournament in progress — champion to be crowned soon!</div>
+        <div className="text-gray-500 text-sm">Tournament in progress — champion to be crowned soon!</div>
       )}
     </div>
   );

@@ -1,7 +1,5 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { Toaster } from 'react-hot-toast';
-import { useEffect } from 'react';
-import { useUIStore } from './store/uiStore';
 
 // Pages
 import Landing from './pages/Landing';
@@ -19,15 +17,6 @@ import Login from './pages/Login';
 import MatchDetails from './pages/MatchDetails';
 import AdminPortal from './pages/AdminPortal';
 import UmpireScreen from './pages/UmpireScreen';
-
-function ThemeInit() {
-  const { isDark } = useUIStore();
-  useEffect(() => {
-    if (isDark) document.documentElement.classList.add('dark');
-    else document.documentElement.classList.remove('dark');
-  }, [isDark]);
-  return null;
-}
 
 function AnimatedRoutes() {
   return (
@@ -54,20 +43,20 @@ function AnimatedRoutes() {
 export default function App() {
   return (
     <BrowserRouter>
-      <ThemeInit />
       <AnimatedRoutes />
       <Toaster
         position="top-right"
         toastOptions={{
           duration: 3000,
           style: {
-            background: '#0f172a',
-            color: '#f8fafc',
-            border: '1px solid rgba(37,99,235,0.3)',
-            borderRadius: '12px',
+            background: '#ffffff',
+            color: '#111827',
+            border: '1px solid #e5e7eb',
+            borderRadius: '10px',
             fontSize: '14px',
+            boxShadow: '0 4px 12px rgba(0,0,0,0.08)',
           },
-          success: { iconTheme: { primary: '#2563EB', secondary: '#f8fafc' } },
+          success: { iconTheme: { primary: '#2563EB', secondary: '#ffffff' } },
         }}
       />
     </BrowserRouter>

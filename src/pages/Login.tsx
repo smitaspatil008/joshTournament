@@ -21,10 +21,10 @@ export default function Login() {
     const ok = login(pin, role);
     setLoading(false);
     if (ok) {
-      toast.success(`✅ Welcome, ${role === 'admin' ? 'Admin' : 'Umpire'}!`);
+      toast.success(`Welcome, ${role === 'admin' ? 'Admin' : 'Umpire'}!`);
       navigate('/admin');
     } else {
-      toast.error('❌ Invalid PIN. Try 1234');
+      toast.error('Invalid PIN. Try 1234');
       setPin('');
     }
   };
@@ -35,29 +35,26 @@ export default function Login() {
         {/* Logo */}
         <motion.div initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }}
           className="text-center mb-8">
-          <div className="w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-4"
-            style={{ background: 'linear-gradient(135deg,#2563EB,#7C3AED)', boxShadow: '0 8px 32px rgba(37,99,235,0.4)' }}>
+          <div className="w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-4 bg-blue-600 shadow-lg">
             <Trophy className="w-8 h-8 text-white" />
           </div>
-          <h1 className="font-display font-bold text-2xl gradient-text mb-1">Josh — Carrom & Sequence</h1>
-          <p className="text-muted text-sm">Admin & Umpire Login</p>
+          <h1 className="font-display font-bold text-2xl text-blue-600 font-extrabold mb-1">Josh — Carrom & Sequence</h1>
+          <p className="text-gray-500 text-sm">Admin & Umpire Login</p>
         </motion.div>
 
         {/* Card */}
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }}
-          className="surface rounded-3xl p-8">
+          className="bg-white rounded-2xl border border-gray-200 shadow-sm p-8">
 
           {/* Role selector */}
           <div className="flex gap-3 mb-6">
             {(['admin', 'umpire'] as const).map((r) => (
               <button key={r} onClick={() => setRole(r)} type="button"
-                className="flex-1 py-3 rounded-xl font-semibold text-sm capitalize flex items-center justify-center gap-2 transition-all"
-                style={{
-                  background: role === r ? 'linear-gradient(135deg,#2563EB,#7C3AED)' : 'var(--color-surface-2)',
-                  color: role === r ? 'white' : 'var(--color-text-muted)',
-                  border: role === r ? 'none' : '1px solid var(--color-border)',
-                  boxShadow: role === r ? '0 4px 16px rgba(37,99,235,0.3)' : 'none',
-                }}>
+                className={`flex-1 py-3 rounded-lg font-semibold text-sm capitalize flex items-center justify-center gap-2 transition-all ${
+                  role === r
+                    ? 'bg-blue-600 text-white shadow-md'
+                    : 'bg-white text-gray-500 border border-gray-200 hover:bg-gray-50'
+                }`}>
                 {r === 'admin' ? <Shield className="w-4 h-4" /> : <Zap className="w-4 h-4" />}
                 {r}
               </button>
@@ -66,7 +63,7 @@ export default function Login() {
 
           <form onSubmit={handleLogin} className="space-y-4">
             <div>
-              <label className="block text-sm font-medium mb-2" style={{ color: 'var(--color-text)' }}>Access PIN</label>
+              <label className="block text-sm font-medium mb-2 text-gray-900">Access PIN</label>
               <div className="relative">
                 <input
                   type={showPin ? 'text' : 'password'}
@@ -74,28 +71,20 @@ export default function Login() {
                   onChange={(e) => setPin(e.target.value)}
                   placeholder="Enter 4-digit PIN"
                   maxLength={6}
-                  className="w-full px-4 py-3 rounded-xl border text-center text-2xl font-bold tracking-[0.5em] outline-none transition-all"
-                  style={{
-                    background: 'var(--color-surface-2)',
-                    borderColor: 'var(--color-border)',
-                    color: 'var(--color-text)',
-                  }}
-                  onFocus={(e) => { e.target.style.borderColor = '#2563EB'; e.target.style.boxShadow = '0 0 0 3px rgba(37,99,235,0.15)'; }}
-                  onBlur={(e) => { e.target.style.borderColor = 'var(--color-border)'; e.target.style.boxShadow = 'none'; }}
+                  className="w-full px-4 py-3 rounded-lg border border-gray-300 text-center text-2xl font-bold tracking-[0.5em] outline-none transition-all bg-white text-gray-900 focus:ring-2 focus:ring-blue-500/30 focus:border-blue-500"
                 />
                 <button type="button" onClick={() => setShowPin(!showPin)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-muted hover:text-brand-blue transition-colors">
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-blue-600 transition-colors">
                   {showPin ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                 </button>
               </div>
-              <p className="text-xs text-muted mt-1.5 text-center">Demo PIN: 1234</p>
+              <p className="text-xs text-gray-500 mt-1.5 text-center">Demo PIN: 1234</p>
             </div>
 
             <motion.button
               whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}
               type="submit" disabled={loading || pin.length < 4}
-              className="w-full py-3.5 rounded-xl font-semibold text-white transition-all disabled:opacity-50 disabled:cursor-not-allowed"
-              style={{ background: 'linear-gradient(135deg,#2563EB,#7C3AED)', boxShadow: '0 4px 20px rgba(37,99,235,0.3)' }}>
+              className="w-full py-3.5 rounded-lg font-semibold text-white transition-all disabled:opacity-50 disabled:cursor-not-allowed bg-blue-600 hover:bg-blue-700 shadow-md">
               {loading ? (
                 <div className="flex items-center justify-center gap-2">
                   <motion.div animate={{ rotate: 360 }} transition={{ duration: 1, repeat: Infinity, ease: 'linear' }}
@@ -107,14 +96,14 @@ export default function Login() {
           </form>
 
           {/* Info */}
-          <div className="mt-6 pt-5 border-t text-xs text-muted text-center space-y-1" style={{ borderColor: 'var(--color-border)' }}>
+          <div className="mt-6 pt-5 border-t border-gray-200 text-xs text-gray-500 text-center space-y-1">
             <p><span className="font-semibold">Admin</span> — full tournament control</p>
             <p><span className="font-semibold">Umpire</span> — update scores during matches</p>
           </div>
         </motion.div>
 
-        <p className="text-center text-xs text-muted mt-6">
-          Public viewers can browse without login. <a href="/" className="text-brand-blue hover:underline">Go to home →</a>
+        <p className="text-center text-xs text-gray-500 mt-6">
+          Public viewers can browse without login. <a href="/" className="text-blue-600 hover:underline">Go to home →</a>
         </p>
       </div>
     </Layout>
